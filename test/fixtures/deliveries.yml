@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  delivery_person_id: 1
+  customer: one
+  status: MyString
+  delivery_date: 2025-05-13
+
+two:
+  delivery_person_id: 1
+  customer: two
+  status: MyString
+  delivery_date: 2025-05-13

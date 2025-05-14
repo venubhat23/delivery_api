@@ -1,0 +1,13 @@
+
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  username: mahadev
+  password: your_secure_password  # 🔁 replace with the exact password you used earlier
+  host: localhost
+  port: 5432
+
+development:
+  <<: *default
+  database: mahadev_db3

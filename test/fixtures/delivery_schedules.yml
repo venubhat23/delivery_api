@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  customer: one
+  delivery_person: one
+  frequency: MyString
+  start_date: 2025-05-14
+  end_date: 2025-05-14
+  status: MyString
+
+two:
+  customer: two
+  delivery_person: two
+  frequency: MyString
+  start_date: 2025-05-14
+  end_date: 2025-05-14
+  status: MyString
