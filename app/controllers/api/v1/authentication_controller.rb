@@ -17,8 +17,6 @@ module Api
 
       # POST /api/v1/signup
       def signup
-          debugger   # This will pause execution here
-
         @user = User.new(user_params)
         
         if @user.save
