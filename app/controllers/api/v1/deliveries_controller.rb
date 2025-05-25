@@ -37,8 +37,7 @@ module Api
         delivery = DeliveryAssignment.find(params[:id])
         
         # Check if this delivery belongs to the current delivery person
-        
-        delivery.update(status: 'completed')
+        delivery.update(status: 'completed', completed_at: Date.today)
         # Get the next nearest delivery
         current_lat = params[:current_lat].to_f
         current_lng = params[:current_lng].to_f
