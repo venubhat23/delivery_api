@@ -20,7 +20,8 @@
           post '/start', to: 'deliveries#start'
           post '/:id/complete', to: 'deliveries#complete'
           get '/customers', to: 'deliveries#customers'
-        
+          get '/deliveries/today_summary', to: 'deliveries#today_summary'
+
         # Delivery schedules routes
         resources :delivery_schedules
         

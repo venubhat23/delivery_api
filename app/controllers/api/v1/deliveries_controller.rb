@@ -56,6 +56,57 @@ module Api
           }, status: :ok
         end
       end
+
+      # GET /api/v1/deliveries/today_summary
+      def today_summary
+        today = Date.today
+        
+        # Get all delivery assignments for today
+        todays_assignments = DeliveryAssignment.where(
+          user_id: current_user.id, 
+          scheduled_date: today
+        ).includes(:customer, :product)
+        
+        # Calculate counts by status
+        total_count = todays_assignments.count
+        completed_count = todays_assignments.where(status: 'completed').count
+        pending_count = todays_assignments.where(status: 'pending').count
+        in_progress_count = todays_assignments.where(status: 'in_progress').count
+        
+        # Get customer list with delivery details
+        customer_list = todays_assignments.map do |assignment|
+          {
+            delivery_id: assignment.id,
+            customer: {
+              id: assignment.customer.id,
+              name: assignment.customer.name,
+              address: assignment.customer.address,
+              latitude: assignment.customer.latitude,
+              longitude: assignment.customer.longitude
+            },
+            product: {
+              id: assignment.product&.id,
+              name: assignment.product&.name,
+              quantity: assignment.quantity,
+              unit: assignment.unit
+            },
+            status: assignment.status,
+            completed_at: assignment.completed_at
+          }
+        end
+        
+        render json: {
+          date: today,
+          delivery_summary: {
+            total_deliveries: total_count,
+            completed: completed_count,
+            pending: pending_count,
+            in_progress: in_progress_count,
+            completion_rate: total_count > 0 ? ((completed_count.to_f / total_count) * 100).round(2) : 0
+          },
+          customers: customer_list
+        }, status: :ok
+      end
       
       # GET /api/v1/deliveries/customers
       def customers

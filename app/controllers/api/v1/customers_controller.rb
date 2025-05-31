@@ -59,7 +59,7 @@ module Api
       end
       
       def customer_params
-        params.permit(:name, :address, :latitude, :longitude, :user_id)
+        params.permit(:name, :address, :latitude, :longitude, :user_id, :image_url)
       end
     end
   end
