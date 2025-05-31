@@ -82,7 +82,8 @@ module Api
               name: assignment.customer.name,
               address: assignment.customer.address,
               latitude: assignment.customer.latitude,
-              longitude: assignment.customer.longitude
+              longitude: assignment.customer.longitude,
+              image_url: assignment.customer.image_url
             },
             product: {
               id: assignment.product&.id,

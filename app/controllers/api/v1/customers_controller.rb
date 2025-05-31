@@ -18,7 +18,8 @@ module Api
               name: customer.name,
               updated_address: customer.address,
               lat: customer.latitude,
-              lng: customer.longitude
+              lng: customer.longitude,
+              image_url: customer.image_url
             }
           }, status: :ok
         else
