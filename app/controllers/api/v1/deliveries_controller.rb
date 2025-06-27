@@ -10,7 +10,7 @@ module Api
         current_lng = params[:current_lng].to_f
         
         # Find customers with pending deliveries for this delivery person
-        pending_deliveries = DeliveryAssignment.where(user_id: current_user.id, scheduled_date: Date.today, status: "pending").includes(:customer)
+        pending_deliveries = DeliveryAssignment.where(user_id: current_user.id, scheduled_date: Date.today).where("status ILIKE ?", "pending").includes(:customer)
         
         if pending_deliveries.empty?
           return render json: { message: "All deliveries completed for today." }, status: :ok
@@ -108,7 +108,7 @@ module Api
           customers: customer_list
         }, status: :ok
       end
-      
+
       # GET /api/v1/deliveries/customers
       def customers
         if current_user.delivery_person?
