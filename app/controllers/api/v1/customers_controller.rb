@@ -54,9 +54,14 @@ module Api
       private
       
       def customer_location_params
-        params.permit(:new_address, :lat, :lng).transform_keys{ |key| 
-          key == 'new_address' ? 'address' : (key == 'lat' ? 'latitude' : (key == 'lng' ? 'longitude' : key))
-        }
+        params.permit(:new_address, :lat, :lng, :image_url).transform_keys do |key| 
+          case key
+          when 'new_address' then 'address'
+          when 'lat' then 'latitude'
+          when 'lng' then 'longitude'
+          else key
+          end
+        end
       end
       
       def customer_params
