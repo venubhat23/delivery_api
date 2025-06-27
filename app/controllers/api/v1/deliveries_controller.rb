@@ -42,13 +42,13 @@ module Api
         current_lat = params[:current_lat].to_f
         current_lng = params[:current_lng].to_f
         
-        pending_deliveries = DeliveryAssignment.where(user_id: current_user.id, scheduled_date: Date.today, status: "pending").includes(:customer)
+        pending_deliveries = DeliveryAssignment.where(user_id: current_user.id, scheduled_date: Date.today).where("status ILIKE ?", "pending").includes(:customer)
         nearest_delivery = find_nearest_delivery(pending_deliveries, current_lat, current_lng)
 
         if pending_deliveries.empty?
           render json: { message: "All deliveries completed for today." }, status: :ok
         else
-          pending_deliveries.update(status: 'in_progress')
+          nearest_delivery.update(status: 'in_progress')
           render json: {
             delivery_id: nearest_delivery.id,
             customer: nearest_delivery.customer.as_json(except: [:user_id]),
