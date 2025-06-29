@@ -48,6 +48,7 @@ module Api
       # 4. Get Customer Details
       # GET /api/v1/customers/:id
       def show
+        @customer = Customer.find(params["id"])
         render json: @customer, status: :ok
       end
  
