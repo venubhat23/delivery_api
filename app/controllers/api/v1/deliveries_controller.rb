@@ -10,9 +10,10 @@ module Api
         current_lng = params[:current_lng].to_f
         
         # Find customers with pending deliveries for this delivery person
-        pending_deliveries = DeliveryAssignment.where(user_id: current_user.id, scheduled_date: Date.today).where("status ILIKE ?", "pending").includes(:customer)
-        
-        if pending_deliveries.empty?
+        pending_deliveries = DeliveryAssignment.where(user_id: current_user.id, scheduled_date: Date.today)
+                                              .where("status ILIKE ANY (ARRAY[?])", ["pending", "in_progress"])
+                                              .includes(:customer)
+        if pending_deliveries.empty?  
           return render json: { message: "All deliveries completed for today." }, status: :ok
         end
         
@@ -41,8 +42,11 @@ module Api
         # Get the next nearest delivery
         current_lat = params[:current_lat].to_f
         current_lng = params[:current_lng].to_f
-        
-        pending_deliveries = DeliveryAssignment.where(user_id: current_user.id, scheduled_date: Date.today).where("status ILIKE ?", "pending").includes(:customer)
+
+        pending_deliveries = DeliveryAssignment.where(user_id: current_user.id, scheduled_date: Date.today)
+                                              .where("status ILIKE ANY (ARRAY[?])", ["pending", "in_progress"])
+                                              .includes(:customer)        
+
         nearest_delivery = find_nearest_delivery(pending_deliveries, current_lat, current_lng)
 
         if pending_deliveries.empty?
