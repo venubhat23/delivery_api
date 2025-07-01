@@ -25,6 +25,8 @@ module Api
           nearest_delivery.update(status: 'in_progress')
           render json: {
             delivery_id: nearest_delivery.id,
+            delivery_quantity: nearest_delivery.quantity,
+            delivery_unit: nearest_delivery.unit,
             customer: nearest_delivery.customer.as_json(except: [:user_id]),
             products: nearest_delivery.product
           }, status: :ok
