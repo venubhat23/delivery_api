@@ -1,8 +1,10 @@
 class Customer < ApplicationRecord
   belongs_to :user
-  has_many :deliveries
+  belongs_to :delivery_person, class_name: 'User', optional: true
+  has_many :deliveries, dependent: :destroy
   has_many :delivery_schedules, dependent: :destroy
   has_many :delivery_assignments, dependent: :restrict_with_error
+  has_many :invoices, dependent: :destroy
   
   # Delegate user attributes for convenience
   delegate :name, to: :user, prefix: true, allow_nil: true
@@ -12,20 +14,42 @@ class Customer < ApplicationRecord
   validates :address, presence: true
   validates :latitude, presence: true, numericality: true
   validates :longitude, presence: true, numericality: true
+  validates :phone_number, format: { with: /\A[0-9]{10}\z/, message: "must be 10 digits" }, allow_blank: true
+  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
+  validates :preferred_language, inclusion: { in: %w[en hi te ta kn] }, allow_blank: true
+  validates :delivery_time_preference, inclusion: { in: %w[morning afternoon evening] }, allow_blank: true
+  validates :notification_method, inclusion: { in: %w[sms email whatsapp] }, allow_blank: true
+  validates :address_type, inclusion: { in: %w[home office] }, allow_blank: true
   
   reverse_geocoded_by :latitude, :longitude
+  
+  scope :active, -> { where(is_active: true) }
+  scope :by_delivery_person, ->(delivery_person_id) { where(delivery_person_id: delivery_person_id) }
   
   def as_json(options = {})
     super(options.merge(
       except: [:created_at, :updated_at],
       methods: [:user_name],
       include: {
-        user: { only: [:id, :email, :phone] }
+        user: { only: [:id, :email, :phone] },
+        delivery_person: { only: [:id, :name, :phone] }
       }
     ))
   end
   
   def user_name
     user.name
+  end
+  
+  def full_address
+    [address, address_landmark].compact.join(', ')
+  end
+  
+  def primary_phone
+    phone_number.presence || user&.phone
+  end
+  
+  def primary_email
+    email.presence || user&.email
   end
 end
