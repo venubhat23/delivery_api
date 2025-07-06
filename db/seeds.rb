@@ -1,14 +1,59 @@
-# Clear existing data
+# Clear existing data (in correct order to avoid foreign key violations)
 DeliveryItem.delete_all
+DeliveryAssignment.delete_all
+DeliverySchedule.delete_all
 Delivery.delete_all
 Product.delete_all
 Customer.delete_all
 User.delete_all
+Category.delete_all
+
+# Create categories
+milk_category = Category.create!(
+  name: 'Milk Products',
+  description: 'Fresh milk and dairy products',
+  color: '#4CAF50'
+)
+
+dairy_category = Category.create!(
+  name: 'Dairy Products',
+  description: 'Dairy products like yogurt, cheese, etc.',
+  color: '#2196F3'
+)
 
 # Create sample products
-milk_regular = Product.create!(name: 'Regular Cow Milk', description: 'Fresh cow milk')
-milk_premium = Product.create!(name: 'Premium Buffalo Milk', description: 'Fresh buffalo milk')
-milk_toned = Product.create!(name: 'Toned Milk', description: 'Toned milk with 3% fat')
+milk_regular = Product.create!(
+  name: 'Regular Cow Milk',
+  description: 'Fresh cow milk',
+  price: 25.00,
+  unit_type: 'liters',
+  available_quantity: 100,
+  category: milk_category,
+  is_subscription_eligible: true,
+  stock_alert_threshold: 10
+)
+
+milk_premium = Product.create!(
+  name: 'Premium Buffalo Milk',
+  description: 'Fresh buffalo milk',
+  price: 35.00,
+  unit_type: 'liters',
+  available_quantity: 50,
+  category: milk_category,
+  is_subscription_eligible: true,
+  stock_alert_threshold: 5
+)
+
+milk_toned = Product.create!(
+  name: 'Toned Milk',
+  description: 'Toned milk with 3% fat',
+  price: 22.00,
+  unit_type: 'liters',
+  available_quantity: 75,
+  category: milk_category,
+  is_subscription_eligible: true,
+  stock_alert_threshold: 8
+)
 
 # Create admin user
 admin = User.create!(
@@ -77,55 +122,94 @@ customer3 = Customer.create!(
   user: customer3_user
 )
 
-# Create deliveries for today
+# Create delivery schedules and assignments for today
 today = Date.today
 
-# Delivery for customer 1
-delivery1 = Delivery.create!(
+# Delivery schedule for customer 1 (single day order)
+schedule1 = DeliverySchedule.create!(
   customer: customer1,
-  delivery_person_id: delivery_person.id,
-  status: 'pending',
-  delivery_date: today
-)
-
-DeliveryItem.create!(
-  delivery: delivery1,
+  user: admin,
   product: milk_regular,
-  quantity: 2
+  frequency: 'daily',
+  start_date: today,
+  end_date: today + 1.day,
+  status: 'active',
+  default_quantity: 2.0,
+  default_unit: 'liters'
 )
 
-# Delivery for customer 2
-delivery2 = Delivery.create!(
+# Delivery assignment for customer 1
+assignment1 = DeliveryAssignment.create!(
+  delivery_schedule: schedule1,
+  customer: customer1,
+  user: admin,
+  scheduled_date: today,
+  product: milk_regular,
+  quantity: 2.0,
+  unit: 'liters',
+  status: 'pending'
+)
+
+# Delivery schedule for customer 2 (single day order)
+schedule2 = DeliverySchedule.create!(
   customer: customer2,
-  delivery_person_id: delivery_person.id,
-  status: 'pending',
-  delivery_date: today
-)
-
-DeliveryItem.create!(
-  delivery: delivery2,
+  user: admin,
   product: milk_premium,
-  quantity: 1
+  frequency: 'daily',
+  start_date: today,
+  end_date: today + 1.day,
+  status: 'active',
+  default_quantity: 1.0,
+  default_unit: 'liters'
 )
 
-# Delivery for customer 3
-delivery3 = Delivery.create!(
+# Delivery assignment for customer 2
+assignment2 = DeliveryAssignment.create!(
+  delivery_schedule: schedule2,
+  customer: customer2,
+  user: admin,
+  scheduled_date: today,
+  product: milk_premium,
+  quantity: 1.0,
+  unit: 'liters',
+  status: 'pending'
+)
+
+# Delivery schedule for customer 3 (subscription - weekly)
+schedule3 = DeliverySchedule.create!(
   customer: customer3,
-  delivery_person_id: delivery_person.id,
-  status: 'pending',
-  delivery_date: today
-)
-
-DeliveryItem.create!(
-  delivery: delivery3,
+  user: admin,
   product: milk_regular,
-  quantity: 1.5
+  frequency: 'weekly',
+  start_date: today,
+  end_date: today + 4.weeks,
+  status: 'active',
+  default_quantity: 1.5,
+  default_unit: 'liters'
 )
 
-DeliveryItem.create!(
-  delivery: delivery3,
-  product: milk_toned,
-  quantity: 1
+# Delivery assignment for customer 3 (first delivery)
+assignment3 = DeliveryAssignment.create!(
+  delivery_schedule: schedule3,
+  customer: customer3,
+  user: admin,
+  scheduled_date: today,
+  product: milk_regular,
+  quantity: 1.5,
+  unit: 'liters',
+  status: 'pending'
+)
+
+# Another delivery assignment for customer 3 (next week)
+assignment4 = DeliveryAssignment.create!(
+  delivery_schedule: schedule3,
+  customer: customer3,
+  user: admin,
+  scheduled_date: today + 7.days,
+  product: milk_regular,
+  quantity: 1.5,
+  unit: 'liters',
+  status: 'pending'
 )
 
 puts "Seed data created successfully!"

@@ -1,0 +1,836 @@
+{
+  "info": {
+    "name": "Milk Delivery Booking System API",
+    "description": "Complete API collection for the milk delivery booking system with customer app endpoints and admin/delivery person endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "api_base",
+      "value": "{{base_url}}/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "customer_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Admin Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/login",
+              "host": ["{{api_base}}"],
+              "path": ["login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Customer Signup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test Customer\",\n  \"email\": \"customer@example.com\",\n  \"phone\": \"+919876543220\",\n  \"password\": \"password123\",\n  \"role\": \"customer\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/signup",
+              "host": ["{{api_base}}"],
+              "path": ["signup"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Categories & Products",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/categories",
+              "host": ["{{api_base}}"],
+              "path": ["categories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/products",
+              "host": ["{{api_base}}"],
+              "path": ["products"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Products by Category",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/products?category_id=1",
+              "host": ["{{api_base}}"],
+              "path": ["products"],
+              "query": [
+                {
+                  "key": "category_id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Available Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/products?available=true",
+              "host": ["{{api_base}}"],
+              "path": ["products"],
+              "query": [
+                {
+                  "key": "available",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Subscription Eligible Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/products?subscription_eligible=true",
+              "host": ["{{api_base}}"],
+              "path": ["products"],
+              "query": [
+                {
+                  "key": "subscription_eligible",
+                  "value": "true"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/products?search=milk",
+              "host": ["{{api_base}}"],
+              "path": ["products"],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "milk"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Low Stock Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/products/low_stock",
+              "host": ["{{api_base}}"],
+              "path": ["products", "low_stock"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Orders (Single-day)",
+      "item": [
+        {
+          "name": "Place Single Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": {{customer_id}},\n  \"product_id\": 1,\n  \"quantity\": 2,\n  \"unit\": \"liters\",\n  \"delivery_date\": \"2025-01-07\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/place_order",
+              "host": ["{{api_base}}"],
+              "path": ["place_order"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Customer Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/orders?customer_id={{customer_id}}",
+              "host": ["{{api_base}}"],
+              "path": ["orders"],
+              "query": [
+                {
+                  "key": "customer_id",
+                  "value": "{{customer_id}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Orders",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/orders",
+              "host": ["{{api_base}}"],
+              "path": ["orders"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Subscriptions (Multi-day)",
+      "item": [
+        {
+          "name": "Create Subscription",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": {{customer_id}},\n  \"product_id\": 1,\n  \"frequency\": \"daily\",\n  \"start_date\": \"2025-01-07\",\n  \"end_date\": \"2025-01-14\",\n  \"quantity\": 1.5,\n  \"unit\": \"liters\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/subscriptions",
+              "host": ["{{api_base}}"],
+              "path": ["subscriptions"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Weekly Subscription",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": {{customer_id}},\n  \"product_id\": 2,\n  \"frequency\": \"weekly\",\n  \"start_date\": \"2025-01-07\",\n  \"end_date\": \"2025-02-07\",\n  \"quantity\": 2,\n  \"unit\": \"liters\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/subscriptions",
+              "host": ["{{api_base}}"],
+              "path": ["subscriptions"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Customer Subscriptions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/subscriptions?customer_id={{customer_id}}",
+              "host": ["{{api_base}}"],
+              "path": ["subscriptions"],
+              "query": [
+                {
+                  "key": "customer_id",
+                  "value": "{{customer_id}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Subscriptions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/subscriptions",
+              "host": ["{{api_base}}"],
+              "path": ["subscriptions"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Subscription",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 2.5,\n  \"end_date\": \"2025-01-21\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/subscriptions/1",
+              "host": ["{{api_base}}"],
+              "path": ["subscriptions", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cancel Subscription",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/subscriptions/1",
+              "host": ["{{api_base}}"],
+              "path": ["subscriptions", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Customer Management",
+      "item": [
+        {
+          "name": "Get All Customers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/customers",
+              "host": ["{{api_base}}"],
+              "path": ["customers"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Customer Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/customers/{{customer_id}}",
+              "host": ["{{api_base}}"],
+              "path": ["customers", "{{customer_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"New Customer\",\n  \"address\": \"123 Main St, City\",\n  \"phone_number\": \"+919876543221\",\n  \"email\": \"newcustomer@example.com\",\n  \"latitude\": 12.9716,\n  \"longitude\": 77.5946,\n  \"user_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/customers",
+              "host": ["{{api_base}}"],
+              "path": ["customers"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Customer Settings",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone_number\": \"+919876543222\",\n  \"preferred_language\": \"en\",\n  \"delivery_time_preference\": \"morning\",\n  \"notification_method\": \"sms\",\n  \"alt_phone_number\": \"+919876543223\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/customers/{{customer_id}}/settings",
+              "host": ["{{api_base}}"],
+              "path": ["customers", "{{customer_id}}", "settings"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Customer Location",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"latitude\": 12.9716,\n  \"longitude\": 77.5946,\n  \"address\": \"Updated Address, City\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/customers/{{customer_id}}/update_location",
+              "host": ["{{api_base}}"],
+              "path": ["customers", "{{customer_id}}", "update_location"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Delivery Assignments",
+      "item": [
+        {
+          "name": "Get All Delivery Assignments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/delivery_assignments",
+              "host": ["{{api_base}}"],
+              "path": ["delivery_assignments"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Customer Delivery Assignments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/delivery_assignments?customer_id={{customer_id}}",
+              "host": ["{{api_base}}"],
+              "path": ["delivery_assignments"],
+              "query": [
+                {
+                  "key": "customer_id",
+                  "value": "{{customer_id}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Today's Delivery Assignments",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/delivery_assignments/today",
+              "host": ["{{api_base}}"],
+              "path": ["delivery_assignments", "today"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Delivery Assignment Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/delivery_assignments/1",
+              "host": ["{{api_base}}"],
+              "path": ["delivery_assignments", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Start Nearest Delivery",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current_latitude\": 12.9716,\n  \"current_longitude\": 77.5946\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/delivery_assignments/start_nearest",
+              "host": ["{{api_base}}"],
+              "path": ["delivery_assignments", "start_nearest"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Complete Delivery Assignment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"delivery_notes\": \"Delivered successfully\",\n  \"actual_quantity\": 2.0\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/delivery_assignments/1/complete",
+              "host": ["{{api_base}}"],
+              "path": ["delivery_assignments", "1", "complete"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Delivery Schedules (Admin)",
+      "item": [
+        {
+          "name": "Get All Delivery Schedules",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/delivery_schedules",
+              "host": ["{{api_base}}"],
+              "path": ["delivery_schedules"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Delivery Schedule Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/delivery_schedules/1",
+              "host": ["{{api_base}}"],
+              "path": ["delivery_schedules", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Delivery Schedule",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": {{customer_id}},\n  \"user_id\": {{user_id}},\n  \"product_id\": 1,\n  \"frequency\": \"daily\",\n  \"start_date\": \"2025-01-07\",\n  \"end_date\": \"2025-01-14\",\n  \"default_quantity\": 2.0,\n  \"default_unit\": \"liters\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/delivery_schedules",
+              "host": ["{{api_base}}"],
+              "path": ["delivery_schedules"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Delivery Schedule",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"default_quantity\": 2.5,\n  \"end_date\": \"2025-01-21\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/delivery_schedules/1",
+              "host": ["{{api_base}}"],
+              "path": ["delivery_schedules", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Delivery Schedule",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/delivery_schedules/1",
+              "host": ["{{api_base}}"],
+              "path": ["delivery_schedules", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Legacy Delivery Routes",
+      "item": [
+        {
+          "name": "Start Delivery (Legacy)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"delivery_person_id\": {{user_id}},\n  \"current_latitude\": 12.9716,\n  \"current_longitude\": 77.5946\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/deliveries/start",
+              "host": ["{{api_base}}"],
+              "path": ["deliveries", "start"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Complete Delivery (Legacy)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"delivery_notes\": \"Delivered successfully\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/deliveries/1/complete",
+              "host": ["{{api_base}}"],
+              "path": ["deliveries", "1", "complete"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Delivery Customers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/deliveries/customers",
+              "host": ["{{api_base}}"],
+              "path": ["deliveries", "customers"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Today's Delivery Summary",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/deliveries/today_summary",
+              "host": ["{{api_base}}"],
+              "path": ["deliveries", "today_summary"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin Operations",
+      "item": [
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Organic Products\",\n  \"description\": \"Organic milk and dairy products\",\n  \"color\": \"#8BC34A\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/categories",
+              "host": ["{{api_base}}"],
+              "path": ["categories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Premium Milk Products\",\n  \"description\": \"Premium quality milk and dairy products\",\n  \"color\": \"#FF9800\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/categories/1",
+              "host": ["{{api_base}}"],
+              "path": ["categories", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Organic Cow Milk\",\n  \"description\": \"Fresh organic cow milk\",\n  \"price\": 30.00,\n  \"unit_type\": \"liters\",\n  \"available_quantity\": 50,\n  \"category_id\": 1,\n  \"is_subscription_eligible\": true,\n  \"stock_alert_threshold\": 10\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/products",
+              "host": ["{{api_base}}"],
+              "path": ["products"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 28.00,\n  \"available_quantity\": 75\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/products/1",
+              "host": ["{{api_base}}"],
+              "path": ["products", "1"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

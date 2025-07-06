@@ -10,9 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_27_034435) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_06_120002) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "categories", force: :cascade do |t|
+    t.string "name", null: false
+    t.text "description"
+    t.string "color", null: false
+    t.boolean "is_active", default: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["is_active"], name: "index_categories_on_is_active"
+    t.index ["name"], name: "index_categories_on_name", unique: true
+  end
 
   create_table "customers", force: :cascade do |t|
     t.string "name"
@@ -25,7 +36,24 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_27_034435) do
     t.bigint "delivery_person_id"
     t.string "image_url"
     t.string "phone_number"
+    t.string "email"
+    t.string "gst_number"
+    t.string "pan_number"
+    t.string "member_id"
+    t.string "shipping_address"
+    t.string "preferred_language"
+    t.string "delivery_time_preference"
+    t.string "notification_method"
+    t.string "alt_phone_number"
+    t.string "profile_image_url"
+    t.string "address_landmark"
+    t.string "address_type"
+    t.boolean "is_active", default: true
     t.index ["delivery_person_id"], name: "index_customers_on_delivery_person_id"
+    t.index ["email"], name: "index_customers_on_email"
+    t.index ["gst_number"], name: "index_customers_on_gst_number", unique: true
+    t.index ["is_active"], name: "index_customers_on_is_active"
+    t.index ["member_id"], name: "index_customers_on_member_id", unique: true
     t.index ["user_id"], name: "index_customers_on_user_id"
   end
 
@@ -142,6 +170,16 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_27_034435) do
     t.decimal "total_cgst_percentage", precision: 5, scale: 2
     t.decimal "total_sgst_percentage", precision: 5, scale: 2
     t.decimal "total_igst_percentage", precision: 5, scale: 2
+    t.bigint "category_id"
+    t.string "image_url"
+    t.string "sku"
+    t.integer "stock_alert_threshold"
+    t.boolean "is_subscription_eligible", default: false
+    t.boolean "is_active", default: true
+    t.index ["category_id"], name: "index_products_on_category_id"
+    t.index ["is_active"], name: "index_products_on_is_active"
+    t.index ["is_subscription_eligible"], name: "index_products_on_is_subscription_eligible"
+    t.index ["sku"], name: "index_products_on_sku", unique: true
   end
 
   create_table "purchase_invoice_items", force: :cascade do |t|
@@ -280,6 +318,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_27_034435) do
   add_foreign_key "invoice_items", "invoices"
   add_foreign_key "invoice_items", "products"
   add_foreign_key "invoices", "customers"
+  add_foreign_key "products", "categories"
   add_foreign_key "purchase_invoice_items", "purchase_invoices"
   add_foreign_key "purchase_invoice_items", "purchase_products"
 end
