@@ -7,6 +7,7 @@ class User < ApplicationRecord
   validates :role, presence: true, inclusion: { in: %w(admin delivery_person customer) }
   
   has_one :customer, dependent: :destroy
+  has_one :analytics, dependent: :destroy
   has_many :delivery_schedules, foreign_key: 'delivery_person_id', dependent: :restrict_with_error
   has_many :delivery_assignments, foreign_key: 'delivery_person_id', dependent: :restrict_with_error
   
