@@ -53,6 +53,17 @@ Rails.application.routes.draw do
       # Delivery items routes (for individual item operations)
       resources :delivery_items, only: [:show, :update, :destroy]
       
+      # Analytics routes
+      resources :analytics, only: [:index, :show, :create, :update, :destroy] do
+        collection do
+          post :generate_sample
+        end
+      end
+      
+      # User analytics dashboard
+      get '/users/:user_id/analytics', to: 'analytics#dashboard'
+      get '/analytics/:id/dashboard', to: 'analytics#dashboard'
+
       # Legacy delivery routes (keeping for backward compatibility)
       scope :deliveries do
         post '/start', to: 'deliveries#start'

@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 15px 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+
+        .header h1 {
+            color: #6B46C1;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .user-selector {
+            position: relative;
+        }
+
+        .user-selector select {
+            background: #6B46C1;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            min-width: 200px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 350px 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .profile-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            height: fit-content;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            color: white;
+            font-size: 36px;
+            font-weight: bold;
+        }
+
+        .username {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .handle {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .platform-badge {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .follow-stats {
+            display: flex;
+            justify-content: space-between;
+            margin: 25px 0;
+        }
+
+        .follow-stat {
+            text-align: center;
+        }
+
+        .follow-number {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .follow-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .profile-details {
+            background: #f8f9ff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+
+        .detail-label {
+            color: #666;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .metric-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(31, 38, 135, 0.5);
+        }
+
+        .metric-card.primary { border-left-color: #6B46C1; }
+        .metric-card.secondary { border-left-color: #EC4899; }
+        .metric-card.success { border-left-color: #10B981; }
+        .metric-card.warning { border-left-color: #F59E0B; }
+        .metric-card.info { border-left-color: #3B82F6; }
+        .metric-card.purple { border-left-color: #8B5CF6; }
+
+        .metric-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .metric-label {
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .recent-posts {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #6B46C1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #FEE2E2;
+            color: #DC2626;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 15px;
+            transition: transform 0.2s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .analytics-grid {
+                grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .analytics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .metric-card {
+                padding: 20px 15px;
+            }
+            
+            .metric-value {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Analytics Dashboard</h1>
+            <div class="user-controls">
+                <div class="user-selector">
+                    <select id="userSelect">
+                        <option value="">Select a User</option>
+                    </select>
+                </div>
+                <button class="refresh-btn" onclick="refreshData()">🔄 Refresh</button>
+            </div>
+        </div>
+
+        <div id="loadingState" class="loading">
+            <div class="spinner"></div>
+        </div>
+
+        <div id="errorState" class="error-message" style="display: none;">
+            <p>Error loading analytics data. Please try again.</p>
+        </div>
+
+        <div id="dashboardContent" style="display: none;">
+            <div class="dashboard">
+                <!-- Profile Section -->
+                <div class="profile-section">
+                    <div class="profile-header">
+                        <div class="avatar" id="userAvatar">👤</div>
+                        <div class="username" id="userName">Loading...</div>
+                        <div class="handle" id="userHandle">@loading</div>
+                        <div class="platform-badge">
+                            📱 Instagram Analytics Profile
+                        </div>
+                    </div>
+                    
+                    <div class="follow-stats">
+                        <div class="follow-stat">
+                            <div class="follow-number" id="followersCount">0</div>
+                            <div class="follow-label">Followers</div>
+                        </div>
+                        <div class="follow-stat">
+                            <div class="follow-number" id="followingCount">0</div>
+                            <div class="follow-label">Following</div>
+                        </div>
+                    </div>
+
+                    <div class="profile-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Engagement Rate:</span>
+                            <span class="detail-value" id="engagementRate">0.0%</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Earned Media:</span>
+                            <span class="detail-value" id="earnedMedia">0</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Average Interactions:</span>
+                            <span class="detail-value" id="avgInteractions">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Grid -->
+                <div class="analytics-grid">
+                    <div class="metric-card primary">
+                        <span class="metric-value" id="totalLikes">0</span>
+                        <div class="metric-label">Total Likes</div>
+                    </div>
+                    
+                    <div class="metric-card secondary">
+                        <span class="metric-value" id="totalComments">0</span>
+                        <div class="metric-label">Total Comments</div>
+                    </div>
+                    
+                    <div class="metric-card success">
+                        <span class="metric-value" id="totalEngagement">0.0%</span>
+                        <div class="metric-label">Total Engagement</div>
+                    </div>
+                    
+                    <div class="metric-card info">
+                        <span class="metric-value" id="totalReach">0</span>
+                        <div class="metric-label">Total Reach</div>
+                    </div>
+                    
+                    <div class="metric-card warning">
+                        <span class="metric-value" id="totalShares">0</span>
+                        <div class="metric-label">Total Shares</div>
+                    </div>
+                    
+                    <div class="metric-card purple">
+                        <span class="metric-value" id="totalSaves">0</span>
+                        <div class="metric-label">Total Saves</div>
+                    </div>
+                    
+                    <div class="metric-card primary">
+                        <span class="metric-value" id="totalClicks">0</span>
+                        <div class="metric-label">Total Clicks</div>
+                    </div>
+                    
+                    <div class="metric-card secondary">
+                        <span class="metric-value" id="profileVisits">0</span>
+                        <div class="metric-label">Profile Visits</div>
+                    </div>
+                    
+                    <div class="metric-card success">
+                        <span class="metric-value" id="followersCountCard">0</span>
+                        <div class="metric-label">Followers Count</div>
+                    </div>
+                    
+                    <div class="metric-card info">
+                        <span class="metric-value" id="followingCountCard">0</span>
+                        <div class="metric-label">Following Count</div>
+                    </div>
+                    
+                    <div class="metric-card warning">
+                        <span class="metric-value" id="mediaCount">0</span>
+                        <div class="metric-label">Media Count</div>
+                    </div>
+                    
+                    <div class="metric-card purple">
+                        <span class="metric-value" id="reachPotential">0</span>
+                        <div class="metric-label">Reach Potential</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Posts Section -->
+            <div class="recent-posts">
+                <h2 class="section-title">
+                    📸 Recent Instagram Posts
+                </h2>
+                <div class="empty-state">
+                    <div class="empty-icon">📷</div>
+                    <p>No recent posts found for this account</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        const API_BASE = '/api/v1';
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadUsers();
+        });
+
+        // Load users for the dropdown
+        async function loadUsers() {
+            try {
+                // For demo purposes, we'll create some sample users
+                // In a real app, you'd fetch this from an API
+                const userSelect = document.getElementById('userSelect');
+                
+                // Sample users (you can replace this with actual API call)
+                const sampleUsers = [
+                    { id: 1, name: 'Akshar Shetty', email: 'akshar@example.com' },
+                    { id: 2, name: 'John Doe', email: 'john@example.com' },
+                    { id: 3, name: 'Jane Smith', email: 'jane@example.com' }
+                ];
+
+                sampleUsers.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.id;
+                    option.textContent = `${user.name} (${user.email})`;
+                    userSelect.appendChild(option);
+                });
+
+                userSelect.addEventListener('change', function() {
+                    if (this.value) {
+                        loadAnalytics(this.value);
+                    }
+                });
+
+                // Auto-select first user
+                if (sampleUsers.length > 0) {
+                    userSelect.value = sampleUsers[0].id;
+                    await loadAnalytics(sampleUsers[0].id);
+                }
+
+            } catch (error) {
+                console.error('Error loading users:', error);
+                showError();
+            }
+        }
+
+        // Load analytics data for a user
+        async function loadAnalytics(userId) {
+            showLoading();
+            
+            try {
+                // First try to get existing analytics
+                let response = await fetch(`${API_BASE}/users/${userId}/analytics`);
+                
+                if (!response.ok) {
+                    // If no analytics exist, generate sample data
+                    const generateResponse = await fetch(`${API_BASE}/analytics/generate_sample`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ user_id: userId })
+                    });
+                    
+                    if (!generateResponse.ok) {
+                        throw new Error('Failed to generate analytics data');
+                    }
+                    
+                    // Try fetching again
+                    response = await fetch(`${API_BASE}/users/${userId}/analytics`);
+                }
+
+                if (!response.ok) {
+                    throw new Error('Failed to load analytics');
+                }
+
+                const data = await response.json();
+                displayAnalytics(data);
+                hideLoading();
+
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+                showError();
+                hideLoading();
+            }
+        }
+
+        // Display analytics data
+        function displayAnalytics(data) {
+            const { user, analytics } = data;
+            currentUser = user;
+
+            // Update profile section
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('userHandle').textContent = user.username;
+            document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
+
+            // Update follow stats
+            document.getElementById('followersCount').textContent = analytics.followers_count;
+            document.getElementById('followingCount').textContent = analytics.following_count;
+
+            // Update profile details
+            document.getElementById('engagementRate').textContent = `${analytics.engagement_rate}%`;
+            document.getElementById('earnedMedia').textContent = analytics.earned_media;
+            document.getElementById('avgInteractions').textContent = analytics.average_interactions;
+
+            // Update metric cards
+            document.getElementById('totalLikes').textContent = analytics.total_likes;
+            document.getElementById('totalComments').textContent = analytics.total_comments;
+            document.getElementById('totalEngagement').textContent = `${analytics.total_engagement}%`;
+            document.getElementById('totalReach').textContent = analytics.total_reach;
+            document.getElementById('totalShares').textContent = analytics.total_shares;
+            document.getElementById('totalSaves').textContent = analytics.total_saves;
+            document.getElementById('totalClicks').textContent = analytics.total_clicks;
+            document.getElementById('profileVisits').textContent = analytics.profile_visits;
+            document.getElementById('followersCountCard').textContent = analytics.followers_count;
+            document.getElementById('followingCountCard').textContent = analytics.following_count;
+            document.getElementById('mediaCount').textContent = analytics.media_count;
+            document.getElementById('reachPotential').textContent = analytics.reach_potential;
+
+            // Show dashboard
+            document.getElementById('dashboardContent').style.display = 'block';
+        }
+
+        // Show loading state
+        function showLoading() {
+            document.getElementById('loadingState').style.display = 'flex';
+            document.getElementById('dashboardContent').style.display = 'none';
+            document.getElementById('errorState').style.display = 'none';
+        }
+
+        // Hide loading state
+        function hideLoading() {
+            document.getElementById('loadingState').style.display = 'none';
+        }
+
+        // Show error state
+        function showError() {
+            document.getElementById('errorState').style.display = 'block';
+            document.getElementById('loadingState').style.display = 'none';
+            document.getElementById('dashboardContent').style.display = 'none';
+        }
+
+        // Refresh data
+        async function refreshData() {
+            const userSelect = document.getElementById('userSelect');
+            if (userSelect.value) {
+                await loadAnalytics(userSelect.value);
+            }
+        }
+
+        // Format numbers for display
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return (num / 1000).toFixed(1) + 'K';
+            }
+            return num.toString();
+        }
+    </script>
+</body>
+</html>

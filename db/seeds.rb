@@ -3,6 +3,7 @@ DeliveryItem.delete_all
 DeliveryAssignment.delete_all
 DeliverySchedule.delete_all
 Delivery.delete_all
+Analytics.delete_all
 Product.delete_all
 Customer.delete_all
 User.delete_all
@@ -212,4 +213,64 @@ assignment4 = DeliveryAssignment.create!(
   status: 'pending'
 )
 
-puts "Seed data created successfully!"
+# Create sample analytics data for some users
+akshar_user = User.create!(
+  name: 'Akshar Shetty',
+  email: 'akshar@example.com',
+  phone: '+919876543214',
+  password: 'password123',
+  role: 'customer'
+)
+
+# Create analytics for Akshar (matching the original image data)
+akshar_analytics = Analytics.create!(
+  user: akshar_user,
+  total_likes: 0,
+  total_comments: 0,
+  total_shares: 0,
+  total_saves: 15,
+  total_clicks: 25,
+  total_reach: 1,
+  profile_visits: 0,
+  followers_count: 1,
+  following_count: 21,
+  media_count: 1,
+  reach_potential: 0,
+  earned_media: 0
+)
+
+# Create analytics for admin user with better stats
+admin_analytics = Analytics.create!(
+  user: admin,
+  total_likes: 1250,
+  total_comments: 350,
+  total_shares: 125,
+  total_saves: 890,
+  total_clicks: 2100,
+  total_reach: 15000,
+  profile_visits: 450,
+  followers_count: 5200,
+  following_count: 180,
+  media_count: 45,
+  reach_potential: 8500,
+  earned_media: 25
+)
+
+# Create analytics for delivery person
+delivery_analytics = Analytics.create!(
+  user: delivery_person,
+  total_likes: 450,
+  total_comments: 85,
+  total_shares: 35,
+  total_saves: 220,
+  total_clicks: 650,
+  total_reach: 3200,
+  profile_visits: 120,
+  followers_count: 890,
+  following_count: 95,
+  media_count: 18,
+  reach_potential: 1800,
+  earned_media: 8
+)
+
+puts "Seed data with analytics created successfully!"
