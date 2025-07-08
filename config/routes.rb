@@ -4,6 +4,7 @@ Rails.application.routes.draw do
       # Authentication routes
       post '/signup', to: 'authentication#signup'
       post '/login', to: 'authentication#login'
+      post '/customer_login', to: 'authentication#customer_login'
       
       # Categories routes
       resources :categories, only: [:index, :show, :create, :update, :destroy]

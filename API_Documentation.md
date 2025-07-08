@@ -37,26 +37,128 @@ This is a comprehensive milk delivery booking system API that supports both sing
 http://localhost:3000/api/v1
 ```
 
+### Authorization
+All API endpoints (except authentication endpoints) require a Bearer token in the Authorization header:
+```
+Authorization: Bearer <your_jwt_token>
+```
+
+**Authentication Flow:**
+1. For customers: Use `/customer_login` endpoint which validates against Customer model
+2. For admin/delivery_person: Use `/login` endpoint with role parameter
+3. Use the returned JWT token in the Authorization header for subsequent API calls
+4. For customer signup: Both User and Customer records are created automatically
+
 ### Authentication
 
 #### POST `/login`
-User login endpoint
+Login endpoint for admin and delivery_person users
 ```json
 {
-  "email": "admin@example.com",
+  "phone": "+919876543210",
+  "password": "password123",
+  "role": "admin"
+}
+```
+
+Response:
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9...",
+  "user": {
+    "id": 1,
+    "name": "Admin User",
+    "role": "admin",
+    "email": "admin@example.com",
+    "phone": "+919876543210"
+  }
+}
+```
+
+#### POST `/customer_login`
+Login endpoint specifically for customers (checks Customer model)
+```json
+{
+  "phone": "+919876543220",
   "password": "password123"
+}
+```
+
+Response:
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9...",
+  "user": {
+    "id": 2,
+    "name": "Customer User",
+    "role": "customer",
+    "email": "customer@example.com",
+    "phone": "+919876543220"
+  },
+  "customer": {
+    "id": 1,
+    "name": "Customer Name",
+    "address": "123 Main St, City",
+    "phone_number": "+919876543220",
+    "email": "customer@example.com",
+    "preferred_language": "en",
+    "delivery_time_preference": "morning",
+    "notification_method": "sms"
+  }
 }
 ```
 
 #### POST `/signup`
 User registration endpoint
+For customers (role: "customer"):
 ```json
 {
   "name": "Test Customer",
   "email": "customer@example.com",
   "phone": "+919876543220",
   "password": "password123",
-  "role": "customer"
+  "role": "customer",
+  "address": "123 Main St, City",
+  "latitude": 12.9716,
+  "longitude": 77.5946,
+  "phone_number": "+919876543220",
+  "preferred_language": "en",
+  "delivery_time_preference": "morning",
+  "notification_method": "sms"
+}
+```
+
+For admin/delivery_person:
+```json
+{
+  "name": "Admin User",
+  "email": "admin@example.com",
+  "phone": "+919876543210",
+  "password": "password123",
+  "role": "admin"
+}
+```
+
+Response (for customer):
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9...",
+  "user": {
+    "id": 2,
+    "name": "Test Customer",
+    "role": "customer",
+    "email": "customer@example.com",
+    "phone": "+919876543220"
+  },
+  "customer": {
+    "id": 1,
+    "name": "Test Customer",
+    "address": "123 Main St, City",
+    "phone_number": "+919876543220",
+    "email": "customer@example.com",
+    "latitude": 12.9716,
+    "longitude": 77.5946
+  }
 }
 ```
 
@@ -64,10 +166,12 @@ User registration endpoint
 
 #### GET `/categories`
 Get all product categories
+- **Headers:** `Authorization: Bearer <token>`
 - Returns: Array of categories with id, name, description, and color
 
 #### GET `/products`
 Get all products with optional filtering
+- **Headers:** `Authorization: Bearer <token>`
 - **Query Parameters:**
   - `category_id` - Filter by category
   - `available=true` - Only available products
@@ -83,6 +187,7 @@ Get products with low stock levels
 
 #### POST `/place_order`
 Place a single-day order
+- **Headers:** `Authorization: Bearer <token>`
 ```json
 {
   "customer_id": 1,
@@ -95,6 +200,7 @@ Place a single-day order
 
 #### GET `/orders`
 Get orders with optional filtering
+- **Headers:** `Authorization: Bearer <token>`
 - **Query Parameters:**
   - `customer_id` - Filter by customer
 - Returns: Array of orders with delivery details
