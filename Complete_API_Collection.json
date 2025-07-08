@@ -1,9 +1,9 @@
 {
   "info": {
-    "name": "Milk Delivery Booking System API - UPDATED",
-    "description": "⚠️ DEPRECATED: This collection has been superseded by Complete_API_Collection.json which includes all missing APIs. Use the new collection for complete functionality.",
+    "name": "Complete Milk Delivery System API Collection",
+    "description": "Complete API collection for the milk delivery booking system with ALL endpoints including customer, admin, and delivery person authentication, plus all management APIs",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "version": "1.0.0-deprecated"
+    "version": "2.0.0"
   },
   "variable": [
     {
@@ -14,6 +14,21 @@
     {
       "key": "api_base",
       "value": "{{base_url}}/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "customer_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "delivery_person_token",
+      "value": "",
       "type": "string"
     },
     {
@@ -29,8 +44,30 @@
   ],
   "item": [
     {
-      "name": "Authentication",
+      "name": "🔐 Authentication",
       "item": [
+        {
+          "name": "Customer Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+919876543210\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/login",
+              "host": ["{{api_base}}"],
+              "path": ["login"]
+            }
+          },
+          "response": []
+        },
         {
           "name": "Admin Login",
           "request": {
@@ -43,7 +80,29 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"password123\"\n}"
+              "raw": "{\n  \"phone\": \"+919876543200\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/login",
+              "host": ["{{api_base}}"],
+              "path": ["login"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delivery Person Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+919876543211\",\n  \"password\": \"delivery123\"\n}"
             },
             "url": {
               "raw": "{{api_base}}/login",
@@ -65,7 +124,51 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Test Customer\",\n  \"email\": \"customer@example.com\",\n  \"phone\": \"+919876543220\",\n  \"password\": \"password123\",\n  \"role\": \"customer\"\n}"
+              "raw": "{\n  \"name\": \"John Customer\",\n  \"email\": \"customer@example.com\",\n  \"phone\": \"+919876543220\",\n  \"password\": \"password123\",\n  \"role\": \"customer\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/signup",
+              "host": ["{{api_base}}"],
+              "path": ["signup"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Admin Signup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Admin User\",\n  \"email\": \"admin@example.com\",\n  \"phone\": \"+919876543201\",\n  \"password\": \"admin123\",\n  \"role\": \"admin\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/signup",
+              "host": ["{{api_base}}"],
+              "path": ["signup"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delivery Person Signup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Delivery Person\",\n  \"email\": \"delivery@example.com\",\n  \"phone\": \"+919876543212\",\n  \"password\": \"delivery123\",\n  \"role\": \"delivery_person\"\n}"
             },
             "url": {
               "raw": "{{api_base}}/signup",
@@ -78,7 +181,7 @@
       ]
     },
     {
-      "name": "Categories & Products",
+      "name": "📦 Categories & Products",
       "item": [
         {
           "name": "Get All Categories",
@@ -89,6 +192,89 @@
               "raw": "{{api_base}}/categories",
               "host": ["{{api_base}}"],
               "path": ["categories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/categories/1",
+              "host": ["{{api_base}}"],
+              "path": ["categories", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Organic Products\",\n  \"description\": \"Organic milk and dairy products\",\n  \"color\": \"#8BC34A\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/categories",
+              "host": ["{{api_base}}"],
+              "path": ["categories"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Premium Milk Products\",\n  \"description\": \"Premium quality milk and dairy products\",\n  \"color\": \"#FF9800\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/categories/1",
+              "host": ["{{api_base}}"],
+              "path": ["categories", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/categories/1",
+              "host": ["{{api_base}}"],
+              "path": ["categories", "1"]
             }
           },
           "response": []
@@ -186,7 +372,12 @@
           "name": "Get Low Stock Products",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/products/low_stock",
               "host": ["{{api_base}}"],
@@ -209,27 +400,71 @@
           "response": []
         },
         {
-          "name": "Get Category Details",
+          "name": "Create Product",
           "request": {
-            "method": "GET",
-            "header": [],
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Organic Cow Milk\",\n  \"description\": \"Fresh organic cow milk\",\n  \"price\": 30.00,\n  \"unit_type\": \"liters\",\n  \"available_quantity\": 50,\n  \"category_id\": 1,\n  \"is_subscription_eligible\": true,\n  \"stock_alert_threshold\": 10,\n  \"sku\": \"ORG-MILK-001\",\n  \"is_gst_applicable\": true,\n  \"total_gst_percentage\": 18.0\n}"
+            },
             "url": {
-              "raw": "{{api_base}}/categories/1",
+              "raw": "{{api_base}}/products",
               "host": ["{{api_base}}"],
-              "path": ["categories", "1"]
+              "path": ["products"]
             }
           },
           "response": []
         },
         {
-          "name": "Delete Category",
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 32.00,\n  \"available_quantity\": 75,\n  \"stock_alert_threshold\": 15\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/products/1",
+              "host": ["{{api_base}}"],
+              "path": ["products", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product",
           "request": {
             "method": "DELETE",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
             "url": {
-              "raw": "{{api_base}}/categories/1",
+              "raw": "{{api_base}}/products/1",
               "host": ["{{api_base}}"],
-              "path": ["categories", "1"]
+              "path": ["products", "1"]
             }
           },
           "response": []
@@ -237,7 +472,7 @@
       ]
     },
     {
-      "name": "Orders (Single-day)",
+      "name": "🛒 Orders (Single-day)",
       "item": [
         {
           "name": "Place Single Order",
@@ -247,11 +482,15 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customer_id\": {{customer_id}},\n  \"product_id\": 1,\n  \"quantity\": 2,\n  \"unit\": \"liters\",\n  \"delivery_date\": \"2025-01-07\"\n}"
+              "raw": "{\n  \"customer_id\": {{customer_id}},\n  \"order_date\": \"2025-01-07\",\n  \"customer_address\": \"123 Main St, City\",\n  \"delivery_slot\": \"morning\",\n  \"items\": [\n    {\n      \"product_id\": 1,\n      \"quantity\": 2,\n      \"unit\": \"liters\"\n    },\n    {\n      \"product_id\": 2,\n      \"quantity\": 1,\n      \"unit\": \"liters\"\n    }\n  ]\n}"
             },
             "url": {
               "raw": "{{api_base}}/place_order",
@@ -265,7 +504,12 @@
           "name": "Get Customer Orders",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/orders?customer_id={{customer_id}}",
               "host": ["{{api_base}}"],
@@ -281,10 +525,15 @@
           "response": []
         },
         {
-          "name": "Get All Orders",
+          "name": "Get All Orders (Admin)",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/orders",
               "host": ["{{api_base}}"],
@@ -296,16 +545,20 @@
       ]
     },
     {
-      "name": "Subscriptions (Multi-day)",
+      "name": "📅 Subscriptions (Multi-day)",
       "item": [
         {
-          "name": "Create Subscription",
+          "name": "Create Daily Subscription",
           "request": {
             "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}"
               }
             ],
             "body": {
@@ -328,6 +581,10 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}"
               }
             ],
             "body": {
@@ -343,10 +600,41 @@
           "response": []
         },
         {
+          "name": "Create Monthly Subscription",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customer_id\": {{customer_id}},\n  \"product_id\": 3,\n  \"frequency\": \"monthly\",\n  \"start_date\": \"2025-01-07\",\n  \"end_date\": \"2025-06-07\",\n  \"quantity\": 5,\n  \"unit\": \"liters\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/subscriptions",
+              "host": ["{{api_base}}"],
+              "path": ["subscriptions"]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Get Customer Subscriptions",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/subscriptions?customer_id={{customer_id}}",
               "host": ["{{api_base}}"],
@@ -362,10 +650,15 @@
           "response": []
         },
         {
-          "name": "Get All Subscriptions",
+          "name": "Get All Subscriptions (Admin)",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/subscriptions",
               "host": ["{{api_base}}"],
@@ -382,6 +675,10 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}"
               }
             ],
             "body": {
@@ -400,7 +697,12 @@
           "name": "Cancel Subscription",
           "request": {
             "method": "DELETE",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/subscriptions/1",
               "host": ["{{api_base}}"],
@@ -412,13 +714,18 @@
       ]
     },
     {
-      "name": "Customer Management",
+      "name": "👥 Customer Management",
       "item": [
         {
           "name": "Get All Customers",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/customers",
               "host": ["{{api_base}}"],
@@ -428,10 +735,63 @@
           "response": []
         },
         {
+          "name": "Get Customers by Delivery Person",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{delivery_person_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/customers?delivery_person_id={{user_id}}",
+              "host": ["{{api_base}}"],
+              "path": ["customers"],
+              "query": [
+                {
+                  "key": "delivery_person_id",
+                  "value": "{{user_id}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search Customers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/customers?search=john",
+              "host": ["{{api_base}}"],
+              "path": ["customers"],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "john"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Get Customer Details",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/customers/{{customer_id}}",
               "host": ["{{api_base}}"],
@@ -448,11 +808,15 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"New Customer\",\n  \"address\": \"123 Main St, City\",\n  \"phone_number\": \"+919876543221\",\n  \"email\": \"newcustomer@example.com\",\n  \"latitude\": 12.9716,\n  \"longitude\": 77.5946,\n  \"user_id\": 1\n}"
+              "raw": "{\n  \"name\": \"New Customer\",\n  \"address\": \"123 Main St, City\",\n  \"latitude\": 12.9716,\n  \"longitude\": 77.5946,\n  \"phone_number\": \"+919876543221\",\n  \"email\": \"newcustomer@example.com\",\n  \"user_id\": 1,\n  \"preferred_language\": \"en\",\n  \"delivery_time_preference\": \"morning\",\n  \"notification_method\": \"sms\",\n  \"address_landmark\": \"Near City Mall\",\n  \"address_type\": \"home\"\n}"
             },
             "url": {
               "raw": "{{api_base}}/customers",
@@ -470,11 +834,15 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"phone_number\": \"+919876543222\",\n  \"preferred_language\": \"en\",\n  \"delivery_time_preference\": \"morning\",\n  \"notification_method\": \"sms\",\n  \"alt_phone_number\": \"+919876543223\"\n}"
+              "raw": "{\n  \"phone_number\": \"+919876543222\",\n  \"preferred_language\": \"en\",\n  \"delivery_time_preference\": \"evening\",\n  \"notification_method\": \"email\",\n  \"alt_phone_number\": \"+919876543223\",\n  \"address_landmark\": \"Near Main Market\",\n  \"address_type\": \"office\",\n  \"shipping_address\": \"456 Office St, Business District\"\n}"
             },
             "url": {
               "raw": "{{api_base}}/customers/{{customer_id}}/settings",
@@ -492,11 +860,15 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{delivery_person_token}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"latitude\": 12.9716,\n  \"longitude\": 77.5946,\n  \"address\": \"Updated Address, City\"\n}"
+              "raw": "{\n  \"lat\": 12.9716,\n  \"lng\": 77.5946,\n  \"new_address\": \"Updated Address, City\",\n  \"image_url\": \"https://example.com/location-image.jpg\"\n}"
             },
             "url": {
               "raw": "{{api_base}}/customers/{{customer_id}}/update_location",
@@ -509,13 +881,36 @@
       ]
     },
     {
-      "name": "Delivery Assignments",
+      "name": "🚚 Delivery Assignments",
       "item": [
         {
-          "name": "Get All Delivery Assignments",
+          "name": "Get All Delivery Assignments (Admin)",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/delivery_assignments",
+              "host": ["{{api_base}}"],
+              "path": ["delivery_assignments"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Delivery Person Assignments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{delivery_person_token}}"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/delivery_assignments",
               "host": ["{{api_base}}"],
@@ -528,7 +923,12 @@
           "name": "Get Customer Delivery Assignments",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/delivery_assignments?customer_id={{customer_id}}",
               "host": ["{{api_base}}"],
@@ -547,7 +947,12 @@
           "name": "Get Today's Delivery Assignments",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{delivery_person_token}}"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/delivery_assignments/today",
               "host": ["{{api_base}}"],
@@ -560,7 +965,12 @@
           "name": "Get Delivery Assignment Details",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{delivery_person_token}}"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/delivery_assignments/1",
               "host": ["{{api_base}}"],
@@ -577,11 +987,15 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{delivery_person_token}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"current_latitude\": 12.9716,\n  \"current_longitude\": 77.5946\n}"
+              "raw": "{\n  \"current_lat\": 12.9716,\n  \"current_lng\": 77.5946\n}"
             },
             "url": {
               "raw": "{{api_base}}/delivery_assignments/start_nearest",
@@ -599,11 +1013,15 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{delivery_person_token}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"delivery_notes\": \"Delivered successfully\",\n  \"actual_quantity\": 2.0\n}"
+              "raw": "{\n  \"current_lat\": 12.9716,\n  \"current_lng\": 77.5946,\n  \"notes\": \"Delivered successfully to customer\"\n}"
             },
             "url": {
               "raw": "{{api_base}}/delivery_assignments/1/complete",
@@ -621,11 +1039,15 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"items\": [\n    {\n      \"product_id\": 1,\n      \"quantity\": 2.0,\n      \"unit\": \"liters\"\n    },\n    {\n      \"product_id\": 2,\n      \"quantity\": 1.0,\n      \"unit\": \"liters\"\n    }\n  ]\n}"
+              "raw": "{\n  \"items\": [\n    {\n      \"product_id\": 1,\n      \"quantity\": 2.0\n    },\n    {\n      \"product_id\": 2,\n      \"quantity\": 1.0\n    }\n  ]\n}"
             },
             "url": {
               "raw": "{{api_base}}/delivery_assignments/1/add_items",
@@ -638,13 +1060,18 @@
       ]
     },
     {
-      "name": "Delivery Items",
+      "name": "📦 Delivery Items",
       "item": [
         {
           "name": "Get Delivery Items for Assignment",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{delivery_person_token}}"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/delivery_assignments/1/delivery_items",
               "host": ["{{api_base}}"],
@@ -661,11 +1088,15 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"product_id\": 1,\n  \"quantity\": 2.0,\n  \"unit\": \"liters\"\n}"
+              "raw": "{\n  \"product_id\": 1,\n  \"quantity\": 2.0\n}"
             },
             "url": {
               "raw": "{{api_base}}/delivery_assignments/1/delivery_items",
@@ -679,7 +1110,12 @@
           "name": "Get Delivery Item Details",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{delivery_person_token}}"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/delivery_items/1",
               "host": ["{{api_base}}"],
@@ -696,11 +1132,15 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"quantity\": 2.5,\n  \"unit\": \"liters\"\n}"
+              "raw": "{\n  \"quantity\": 2.5\n}"
             },
             "url": {
               "raw": "{{api_base}}/delivery_items/1",
@@ -714,7 +1154,12 @@
           "name": "Delete Delivery Item",
           "request": {
             "method": "DELETE",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/delivery_items/1",
               "host": ["{{api_base}}"],
@@ -726,13 +1171,54 @@
       ]
     },
     {
-      "name": "Delivery Schedules (Admin)",
+      "name": "📋 Delivery Schedules (Admin)",
       "item": [
         {
           "name": "Get All Delivery Schedules",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/delivery_schedules",
+              "host": ["{{api_base}}"],
+              "path": ["delivery_schedules"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Delivery Person Schedules",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{delivery_person_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{api_base}}/delivery_schedules",
+              "host": ["{{api_base}}"],
+              "path": ["delivery_schedules"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Customer Delivery Schedules",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/delivery_schedules",
               "host": ["{{api_base}}"],
@@ -745,7 +1231,12 @@
           "name": "Get Delivery Schedule Details",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/delivery_schedules/1",
               "host": ["{{api_base}}"],
@@ -762,11 +1253,15 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"customer_id\": {{customer_id}},\n  \"user_id\": {{user_id}},\n  \"product_id\": 1,\n  \"frequency\": \"daily\",\n  \"start_date\": \"2025-01-07\",\n  \"end_date\": \"2025-01-14\",\n  \"default_quantity\": 2.0,\n  \"default_unit\": \"liters\"\n}"
+              "raw": "{\n  \"customer_id\": {{customer_id}},\n  \"user_id\": {{user_id}},\n  \"product_id\": 1,\n  \"frequency\": \"daily\",\n  \"start_date\": \"2025-01-07\",\n  \"end_date\": \"2025-01-14\",\n  \"quantity\": 2.0,\n  \"unit\": \"liters\",\n  \"status\": \"active\"\n}"
             },
             "url": {
               "raw": "{{api_base}}/delivery_schedules",
@@ -784,11 +1279,15 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"default_quantity\": 2.5,\n  \"end_date\": \"2025-01-21\"\n}"
+              "raw": "{\n  \"frequency\": \"weekly\",\n  \"end_date\": \"2025-01-21\",\n  \"status\": \"paused\"\n}"
             },
             "url": {
               "raw": "{{api_base}}/delivery_schedules/1",
@@ -802,7 +1301,12 @@
           "name": "Delete Delivery Schedule",
           "request": {
             "method": "DELETE",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/delivery_schedules/1",
               "host": ["{{api_base}}"],
@@ -814,7 +1318,7 @@
       ]
     },
     {
-      "name": "Legacy Delivery Routes",
+      "name": "🚛 Legacy Delivery Routes",
       "item": [
         {
           "name": "Start Delivery (Legacy)",
@@ -824,11 +1328,15 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{delivery_person_token}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"delivery_person_id\": {{user_id}},\n  \"current_latitude\": 12.9716,\n  \"current_longitude\": 77.5946\n}"
+              "raw": "{\n  \"current_lat\": 12.9716,\n  \"current_lng\": 77.5946\n}"
             },
             "url": {
               "raw": "{{api_base}}/deliveries/start",
@@ -846,11 +1354,15 @@
               {
                 "key": "Content-Type",
                 "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{delivery_person_token}}"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"delivery_notes\": \"Delivered successfully\"\n}"
+              "raw": "{\n  \"current_lat\": 12.9716,\n  \"current_lng\": 77.5946,\n  \"delivery_notes\": \"Delivered successfully\"\n}"
             },
             "url": {
               "raw": "{{api_base}}/deliveries/1/complete",
@@ -864,7 +1376,12 @@
           "name": "Get Delivery Customers",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{delivery_person_token}}"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/deliveries/customers",
               "host": ["{{api_base}}"],
@@ -877,117 +1394,16 @@
           "name": "Get Today's Delivery Summary",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{delivery_person_token}}"
+              }
+            ],
             "url": {
               "raw": "{{api_base}}/deliveries/today_summary",
               "host": ["{{api_base}}"],
               "path": ["deliveries", "today_summary"]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "Admin Operations",
-      "item": [
-        {
-          "name": "Create Category",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Organic Products\",\n  \"description\": \"Organic milk and dairy products\",\n  \"color\": \"#8BC34A\"\n}"
-            },
-            "url": {
-              "raw": "{{api_base}}/categories",
-              "host": ["{{api_base}}"],
-              "path": ["categories"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Update Category",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Premium Milk Products\",\n  \"description\": \"Premium quality milk and dairy products\",\n  \"color\": \"#FF9800\"\n}"
-            },
-            "url": {
-              "raw": "{{api_base}}/categories/1",
-              "host": ["{{api_base}}"],
-              "path": ["categories", "1"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Create Product",
-          "request": {
-            "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"name\": \"Organic Cow Milk\",\n  \"description\": \"Fresh organic cow milk\",\n  \"price\": 30.00,\n  \"unit_type\": \"liters\",\n  \"available_quantity\": 50,\n  \"category_id\": 1,\n  \"is_subscription_eligible\": true,\n  \"stock_alert_threshold\": 10\n}"
-            },
-            "url": {
-              "raw": "{{api_base}}/products",
-              "host": ["{{api_base}}"],
-              "path": ["products"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Update Product",
-          "request": {
-            "method": "PUT",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"price\": 28.00,\n  \"available_quantity\": 75\n}"
-            },
-            "url": {
-              "raw": "{{api_base}}/products/1",
-              "host": ["{{api_base}}"],
-              "path": ["products", "1"]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "Delete Product",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{api_base}}/products/1",
-              "host": ["{{api_base}}"],
-              "path": ["products", "1"]
             }
           },
           "response": []
