@@ -194,6 +194,45 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Get Product Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/products/1",
+              "host": ["{{api_base}}"],
+              "path": ["products", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/categories/1",
+              "host": ["{{api_base}}"],
+              "path": ["categories", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/categories/1",
+              "host": ["{{api_base}}"],
+              "path": ["categories", "1"]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -573,6 +612,116 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Add Items to Delivery Assignment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"items\": [\n    {\n      \"product_id\": 1,\n      \"quantity\": 2.0,\n      \"unit\": \"liters\"\n    },\n    {\n      \"product_id\": 2,\n      \"quantity\": 1.0,\n      \"unit\": \"liters\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/delivery_assignments/1/add_items",
+              "host": ["{{api_base}}"],
+              "path": ["delivery_assignments", "1", "add_items"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Delivery Items",
+      "item": [
+        {
+          "name": "Get Delivery Items for Assignment",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/delivery_assignments/1/delivery_items",
+              "host": ["{{api_base}}"],
+              "path": ["delivery_assignments", "1", "delivery_items"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Delivery Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"product_id\": 1,\n  \"quantity\": 2.0,\n  \"unit\": \"liters\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/delivery_assignments/1/delivery_items",
+              "host": ["{{api_base}}"],
+              "path": ["delivery_assignments", "1", "delivery_items"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Delivery Item Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/delivery_items/1",
+              "host": ["{{api_base}}"],
+              "path": ["delivery_items", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Delivery Item",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 2.5,\n  \"unit\": \"liters\"\n}"
+            },
+            "url": {
+              "raw": "{{api_base}}/delivery_items/1",
+              "host": ["{{api_base}}"],
+              "path": ["delivery_items", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Delivery Item",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{api_base}}/delivery_items/1",
+              "host": ["{{api_base}}"],
+              "path": ["delivery_items", "1"]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -822,6 +971,19 @@
               "mode": "raw",
               "raw": "{\n  \"price\": 28.00,\n  \"available_quantity\": 75\n}"
             },
+            "url": {
+              "raw": "{{api_base}}/products/1",
+              "host": ["{{api_base}}"],
+              "path": ["products", "1"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [],
             "url": {
               "raw": "{{api_base}}/products/1",
               "host": ["{{api_base}}"],
