@@ -11,15 +11,6 @@ class Customer < ApplicationRecord
   delegate :email, :phone, to: :user, allow_nil: true
 
   validates :name, presence: true
-  validates :address, presence: true
-  validates :latitude, presence: true, numericality: true
-  validates :longitude, presence: true, numericality: true
-  validates :phone_number, format: { with: /\A[0-9]{10}\z/, message: "must be 10 digits" }, allow_blank: true
-  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
-  validates :preferred_language, inclusion: { in: %w[en hi te ta kn] }, allow_blank: true
-  validates :delivery_time_preference, inclusion: { in: %w[morning afternoon evening] }, allow_blank: true
-  validates :notification_method, inclusion: { in: %w[sms email whatsapp] }, allow_blank: true
-  validates :address_type, inclusion: { in: %w[home office] }, allow_blank: true
   
   reverse_geocoded_by :latitude, :longitude
   

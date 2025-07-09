@@ -18,9 +18,6 @@ module Api
           end
           
           # Check if product is subscription eligible
-          unless product.is_subscription_eligible?
-            return render json: { error: "Product is not eligible for subscription" }, status: :bad_request
-          end
           
           # Create delivery schedule for subscription
           delivery_schedule = DeliverySchedule.create!(

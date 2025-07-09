@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_06_120002) do
+ActiveRecord::Schema[7.1].define(version: 2025_07_08_160447) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -50,8 +50,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_06_120002) do
     t.string "address_type"
     t.boolean "is_active", default: true
     t.index ["delivery_person_id"], name: "index_customers_on_delivery_person_id"
-    t.index ["email"], name: "index_customers_on_email"
-    t.index ["gst_number"], name: "index_customers_on_gst_number", unique: true
     t.index ["is_active"], name: "index_customers_on_is_active"
     t.index ["member_id"], name: "index_customers_on_member_id", unique: true
     t.index ["user_id"], name: "index_customers_on_user_id"
@@ -81,6 +79,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_06_120002) do
     t.datetime "updated_at", null: false
     t.boolean "invoice_generated", default: false
     t.bigint "invoice_id"
+    t.integer "delivery_person_id"
     t.index ["customer_id"], name: "index_delivery_assignments_on_customer_id"
     t.index ["delivery_schedule_id"], name: "index_delivery_assignments_on_delivery_schedule_id"
     t.index ["invoice_generated"], name: "index_delivery_assignments_on_invoice_generated"
@@ -111,7 +110,9 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_06_120002) do
     t.decimal "default_quantity", precision: 8, scale: 2, default: "1.0"
     t.string "default_unit", default: "pieces"
     t.bigint "product_id"
+    t.integer "delivery_person_id"
     t.index ["customer_id"], name: "index_delivery_schedules_on_customer_id"
+    t.index ["delivery_person_id"], name: "index_delivery_schedules_on_delivery_person_id"
     t.index ["product_id"], name: "index_delivery_schedules_on_product_id"
     t.index ["user_id"], name: "index_delivery_schedules_on_user_id"
   end
