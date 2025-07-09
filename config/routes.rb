@@ -17,6 +17,9 @@ Rails.application.routes.draw do
         end
       end
       
+      # Settings routes - comprehensive customer settings API
+      resources :settings, only: [:show, :update], param: :customer_id
+      
       # Products routes
       resources :products do
         collection do
