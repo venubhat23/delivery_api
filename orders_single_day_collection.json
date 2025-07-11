@@ -1,0 +1,264 @@
+{
+  "info": {
+    "name": "Orders (Single-day)",
+    "description": "Collection for managing single-day orders",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Place Single Order",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"customer_id\": {{customer_id}},\n  \"product_id\": 1,\n  \"quantity\": 2,\n  \"unit\": \"liters\",\n  \"delivery_date\": \"2025-01-07\"\n}"
+        },
+        "url": {
+          "raw": "{{api_base}}/place_order",
+          "host": ["{{api_base}}"],
+          "path": ["place_order"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Orders for Date",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{api_base}}/orders?date=2025-01-07",
+          "host": ["{{api_base}}"],
+          "path": ["orders"],
+          "query": [
+            {
+              "key": "date",
+              "value": "2025-01-07"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Order by ID",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{api_base}}/orders/{{order_id}}",
+          "host": ["{{api_base}}"],
+          "path": ["orders", "{{order_id}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Order",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"quantity\": 3,\n  \"unit\": \"liters\",\n  \"delivery_date\": \"2025-01-07\"\n}"
+        },
+        "url": {
+          "raw": "{{api_base}}/orders/{{order_id}}",
+          "host": ["{{api_base}}"],
+          "path": ["orders", "{{order_id}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Cancel Order",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{api_base}}/orders/{{order_id}}",
+          "host": ["{{api_base}}"],
+          "path": ["orders", "{{order_id}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Customer Orders for Date",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{api_base}}/customers/{{customer_id}}/orders?date=2025-01-07",
+          "host": ["{{api_base}}"],
+          "path": ["customers", "{{customer_id}}", "orders"],
+          "query": [
+            {
+              "key": "date",
+              "value": "2025-01-07"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Available Products",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{api_base}}/products?available_date=2025-01-07",
+          "host": ["{{api_base}}"],
+          "path": ["products"],
+          "query": [
+            {
+              "key": "available_date",
+              "value": "2025-01-07"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Place Multiple Orders",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"orders\": [\n    {\n      \"customer_id\": {{customer_id}},\n      \"product_id\": 1,\n      \"quantity\": 2,\n      \"unit\": \"liters\",\n      \"delivery_date\": \"2025-01-07\"\n    },\n    {\n      \"customer_id\": {{customer_id}},\n      \"product_id\": 2,\n      \"quantity\": 1,\n      \"unit\": \"kg\",\n      \"delivery_date\": \"2025-01-07\"\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{api_base}}/place_orders",
+          "host": ["{{api_base}}"],
+          "path": ["place_orders"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Order Status",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{api_base}}/orders/{{order_id}}/status",
+          "host": ["{{api_base}}"],
+          "path": ["orders", "{{order_id}}", "status"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Order Status",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"confirmed\"\n}"
+        },
+        "url": {
+          "raw": "{{api_base}}/orders/{{order_id}}/status",
+          "host": ["{{api_base}}"],
+          "path": ["orders", "{{order_id}}", "status"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Orders Summary for Date",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{api_base}}/orders/summary?date=2025-01-07",
+          "host": ["{{api_base}}"],
+          "path": ["orders", "summary"],
+          "query": [
+            {
+              "key": "date",
+              "value": "2025-01-07"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "api_base",
+      "value": "https://api.example.com",
+      "type": "string"
+    },
+    {
+      "key": "customer_id",
+      "value": "123",
+      "type": "string"
+    },
+    {
+      "key": "order_id",
+      "value": "456",
+      "type": "string"
+    }
+  ]
+}
