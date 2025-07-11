@@ -5,7 +5,7 @@ module Api
       
       # GET /api/v1/categories
       def index
-        categories = Category.active.order(:name)
+        categories = Category.order(:name)
         render json: categories, status: :ok
       end
       
