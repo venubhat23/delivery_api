@@ -14,15 +14,31 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_08_160447) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "admin_settings", force: :cascade do |t|
+    t.string "business_name"
+    t.text "address"
+    t.string "mobile"
+    t.string "email"
+    t.string "gstin"
+    t.string "pan_number"
+    t.string "account_holder_name"
+    t.string "bank_name"
+    t.string "account_number"
+    t.string "ifsc_code"
+    t.string "upi_id"
+    t.text "terms_and_conditions"
+    t.string "qr_code_path"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "categories", force: :cascade do |t|
     t.string "name", null: false
     t.text "description"
     t.string "color", null: false
-    t.boolean "is_active", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["is_active"], name: "index_categories_on_is_active"
-    t.index ["name"], name: "index_categories_on_name", unique: true
+    t.index ["name"], name: "index_categories_on_name"
   end
 
   create_table "customers", force: :cascade do |t|
@@ -50,8 +66,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_08_160447) do
     t.string "address_type"
     t.boolean "is_active", default: true
     t.index ["delivery_person_id"], name: "index_customers_on_delivery_person_id"
-    t.index ["is_active"], name: "index_customers_on_is_active"
-    t.index ["member_id"], name: "index_customers_on_member_id", unique: true
     t.index ["user_id"], name: "index_customers_on_user_id"
   end
 
@@ -178,9 +192,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_08_160447) do
     t.boolean "is_subscription_eligible", default: false
     t.boolean "is_active", default: true
     t.index ["category_id"], name: "index_products_on_category_id"
-    t.index ["is_active"], name: "index_products_on_is_active"
-    t.index ["is_subscription_eligible"], name: "index_products_on_is_subscription_eligible"
-    t.index ["sku"], name: "index_products_on_sku", unique: true
   end
 
   create_table "purchase_invoice_items", force: :cascade do |t|
@@ -233,9 +244,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_07_08_160447) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "status"
+    t.string "status", default: "unpaid", null: false
     t.index ["category"], name: "index_purchase_products_on_category"
     t.index ["name"], name: "index_purchase_products_on_name"
+    t.index ["status"], name: "index_purchase_products_on_status"
   end
 
   create_table "sales_invoice_items", force: :cascade do |t|
