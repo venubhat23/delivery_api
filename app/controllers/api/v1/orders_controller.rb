@@ -6,7 +6,7 @@ module Api
       def place_order
         ActiveRecord::Base.transaction do
           @customer = Customer.find(params[:customer_id])
-          order_date = Date.parse(params[:order_date])
+          delivery_date = Date.parse(params[:delivery_date])
           items = params[:items]
           
           unless items.present? && items.is_a?(Array)
@@ -18,8 +18,8 @@ module Api
             customer: @customer,
             user_id: find_delivery_person_id(@customer),
             frequency: 'daily',
-            start_date: order_date,
-            end_date: order_date,
+            start_date: delivery_date,
+            end_date: delivery_date,
             status: 'active',
             default_quantity: items.first[:quantity] || 1,
             default_unit: items.first[:unit] || 'pieces'
