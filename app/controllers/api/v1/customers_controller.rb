@@ -1,4 +1,4 @@
-module Api
+THIS SHOULD BE A LINTER ERRORmodule Api
   module V1
     class CustomersController < ApplicationController
       before_action :set_customer, only: [:show, :update_settings]
