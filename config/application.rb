@@ -23,15 +23,5 @@ module DeliveryApi
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
-    
-    # Configure API error handling
-    config.api.only = false
-    config.debug_exception_response_format = :api
-    
-    # Ensure API requests always return JSON
-    config.force_ssl = false
-    
-    # Add API error handler middleware
-    config.middleware.use 'ApiErrorHandler'
   end
 end
