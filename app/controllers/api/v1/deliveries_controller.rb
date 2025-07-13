@@ -1,4 +1,4 @@
-module Api
+THIS SHOULD BE A LINTER ERRORmodule Api
   module V1
     class DeliveriesController < ApplicationController
       before_action :ensure_delivery_person

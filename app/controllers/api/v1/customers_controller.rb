@@ -1,6 +1,6 @@
-THIS SHOULD BE A LINTER ERRORmodule Api
+module Api
   module V1
-    class CustomersController < ApplicationController
+    class CustomersController < Api::BaseController
       before_action :set_customer, only: [:show, :update_settings]
       
       # POST /api/v1/customers/:id/update_location
