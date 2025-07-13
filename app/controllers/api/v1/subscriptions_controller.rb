@@ -1,6 +1,6 @@
 module Api
   module V1
-    class SubscriptionsController < Api::BaseController
+    class SubscriptionsController < ApplicationController
       
       # POST /api/v1/subscriptions
       def create

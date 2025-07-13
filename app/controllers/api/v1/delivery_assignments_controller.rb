@@ -1,6 +1,6 @@
 module Api
   module V1
-    class DeliveryAssignmentsController < Api::BaseController
+    class DeliveryAssignmentsController < ApplicationController
       before_action :set_assignment, only: [:show, :update]
       before_action :ensure_authorized, only: [:update]
       

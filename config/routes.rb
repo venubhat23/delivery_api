@@ -60,9 +60,6 @@ Rails.application.routes.draw do
         get '/customers', to: 'deliveries#customers'
         get '/today_summary', to: 'deliveries#today_summary'
       end
-      
-      # Catch-all route for 404s in API namespace
-      match '*path', to: 'base#route_not_found', via: :all
     end
   end
 end
