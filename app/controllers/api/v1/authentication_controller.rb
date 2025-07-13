@@ -1,6 +1,6 @@
 module Api
   module V1
-    class AuthenticationController < ApplicationController
+    class AuthenticationController < Api::BaseController
       skip_before_action :authenticate_request, only: [:login, :signup, :customer_login]
 
       # POST /api/v1/login

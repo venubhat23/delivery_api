@@ -1,6 +1,6 @@
 module Api
   module V1
-    class CategoriesController < ApplicationController
+    class CategoriesController < Api::BaseController
       before_action :set_category, only: [:show, :update, :destroy]
       
       # GET /api/v1/categories

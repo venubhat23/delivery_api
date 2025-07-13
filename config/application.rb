@@ -23,5 +23,22 @@ module DeliveryApi
     #
     # config.time_zone = "Central Time (US & Canada)"
     # config.eager_load_paths << Rails.root.join("extras")
+    
+    # API Configuration
+    config.api_only = false # We keep this false since we might have some non-API routes
+    
+    # Ensure that errors are properly formatted for API responses
+    config.debug_exception_response_format = :api
+    
+    # Configure default response format for API namespace
+    config.middleware.insert_before 0, Rack::Cors do
+      allow do
+        origins '*'
+        resource '*', headers: :any, methods: [:get, :post, :put, :patch, :delete, :options, :head]
+      end
+    end
+    
+    # Add API error handling middleware
+    config.middleware.use "ApiErrorMiddleware"
   end
 end
