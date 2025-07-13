@@ -37,5 +37,8 @@ module DeliveryApi
         resource '*', headers: :any, methods: [:get, :post, :put, :patch, :delete, :options, :head]
       end
     end
+    
+    # Add API error handling middleware
+    config.middleware.use "ApiErrorMiddleware"
   end
 end

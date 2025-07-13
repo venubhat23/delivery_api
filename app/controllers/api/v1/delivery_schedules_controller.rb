@@ -1,6 +1,6 @@
 module Api
   module V1
-    class DeliverySchedulesController < ApplicationController
+    class DeliverySchedulesController < Api::BaseController
       before_action :set_delivery_schedule, only: [:show, :update, :destroy]
       
       # GET /api/v1/delivery_schedules

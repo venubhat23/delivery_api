@@ -105,5 +105,18 @@ module Api
         timestamp: Time.current.iso8601
       }, status: :unprocessable_entity
     end
+    
+    public
+    
+    # Handle 404 errors for API routes
+    def route_not_found
+      render json: {
+        error: "Endpoint not found",
+        message: "The requested API endpoint does not exist",
+        path: request.path,
+        method: request.request_method,
+        timestamp: Time.current.iso8601
+      }, status: :not_found
+    end
   end
 end

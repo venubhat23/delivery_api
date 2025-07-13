@@ -1,6 +1,6 @@
-THIS SHOULD BE A LINTER ERRORmodule Api
+module Api
   module V1
-    class DeliveriesController < ApplicationController
+    class DeliveriesController < Api::BaseController
       before_action :ensure_delivery_person
       
       # POST /api/v1/deliveries/start
