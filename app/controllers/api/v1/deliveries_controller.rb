@@ -1,7 +1,8 @@
 module Api
   module V1
     class DeliveriesController < ApplicationController
-      before_action :ensure_delivery_person
+      before_action :ensure_delivery_person, except: [:api_not_found]
+      before_action :set_delivery, only: [:complete]
       
       # POST /api/v1/deliveries/start
       def start
@@ -37,10 +38,13 @@ module Api
       
       # POST /api/v1/deliveries/:id/complete
       def complete
-        delivery = DeliveryAssignment.find(params[:id])
-        
         # Check if this delivery belongs to the current delivery person
-        delivery.update(status: 'completed', completed_at: Date.today)
+        unless @delivery.user_id == current_user.id
+          return render json: { error: "Unauthorized", message: "This delivery does not belong to you" }, status: :unauthorized
+        end
+        
+        @delivery.update(status: 'completed', completed_at: Date.today)
+        
         # Get the next nearest delivery
         current_lat = params[:current_lat].to_f
         current_lng = params[:current_lng].to_f
@@ -49,17 +53,30 @@ module Api
                                               .where("status ILIKE ANY (ARRAY[?])", ["pending", "in_progress"])
                                               .includes(:customer)        
 
-        nearest_delivery = find_nearest_delivery(pending_deliveries, current_lat, current_lng)
-
         if pending_deliveries.empty?
-          render json: { message: "All deliveries completed for today." }, status: :ok
-        else
-          nearest_delivery.update(status: 'in_progress')
-          render json: {
-            delivery_id: nearest_delivery.id,
-            customer: nearest_delivery.customer.as_json(except: [:user_id]),
-            products: nearest_delivery.product
+          render json: { 
+            message: "All deliveries completed for today.",
+            completed_delivery_id: @delivery.id
           }, status: :ok
+        else
+          nearest_delivery = find_nearest_delivery(pending_deliveries, current_lat, current_lng)
+          if nearest_delivery
+            nearest_delivery.update(status: 'in_progress')
+            render json: {
+              message: "Delivery completed successfully",
+              completed_delivery_id: @delivery.id,
+              next_delivery: {
+                delivery_id: nearest_delivery.id,
+                customer: nearest_delivery.customer.as_json(except: [:user_id]),
+                products: nearest_delivery.product
+              }
+            }, status: :ok
+          else
+            render json: { 
+              message: "Delivery completed. No more deliveries available.",
+              completed_delivery_id: @delivery.id
+            }, status: :ok
+          end
         end
       end
 
@@ -129,12 +146,25 @@ module Api
         end
       end
       
+      def api_not_found
+        render json: { 
+          error: "Not found", 
+          message: "The requested delivery endpoint does not exist. Use 'complete' instead of partial URLs." 
+        }, status: :not_found
+      end
+      
       private
       
       def ensure_delivery_person
         unless current_user.delivery_person?
           render json: { error: "Only delivery personnel can perform this action" }, status: :unauthorized
         end
+      end
+      
+      def set_delivery
+        @delivery = DeliveryAssignment.find(params[:id])
+      rescue ActiveRecord::RecordNotFound
+        render json: { error: "Delivery not found", message: "The specified delivery does not exist" }, status: :not_found
       end
       
       def find_nearest_delivery(deliveries, current_lat, current_lng)
