@@ -1,6 +1,6 @@
 module Api
   module V1
-    class CustomersController < Api::BaseController
+    class CustomersController < ApplicationController
       before_action :set_customer, only: [:show, :update_settings]
       
       # POST /api/v1/customers/:id/update_location

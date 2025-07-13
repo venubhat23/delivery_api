@@ -1,6 +1,6 @@
 module Api
   module V1
-    class OrdersController < Api::BaseController
+    class OrdersController < ApplicationController
       
       # POST /api/v1/place_order
       def place_order
