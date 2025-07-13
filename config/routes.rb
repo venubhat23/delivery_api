@@ -59,10 +59,17 @@ Rails.application.routes.draw do
         post '/:id/complete', to: 'deliveries#complete'
         get '/customers', to: 'deliveries#customers'
         get '/today_summary', to: 'deliveries#today_summary'
+        
+        # Catch-all for partial delivery URLs
+        match '/:id/*path', to: 'deliveries#api_not_found', via: :all
+        match '*path', to: 'deliveries#api_not_found', via: :all
       end
-      
-      # Catch-all route for unmatched API paths
-      match '*path', to: 'application#api_not_found', via: :all
     end
+    
+    # Catch-all route for unmatched API v1 paths
+    match 'v1/*path', to: 'application#api_not_found', via: :all
   end
+  
+  # Catch-all route for unmatched API paths
+  match 'api/*path', to: 'application#api_not_found', via: :all
 end

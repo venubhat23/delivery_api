@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   include ApiErrorHandling
   
   skip_before_action :verify_authenticity_token
-  before_action :authenticate_request
+  before_action :authenticate_request, except: [:api_not_found]
   
   # Add error handling for API requests
   rescue_from StandardError, with: :handle_server_error

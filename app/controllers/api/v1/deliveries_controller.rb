@@ -1,7 +1,7 @@
 module Api
   module V1
     class DeliveriesController < ApplicationController
-      before_action :ensure_delivery_person
+      before_action :ensure_delivery_person, except: [:api_not_found]
       before_action :set_delivery, only: [:complete]
       
       # POST /api/v1/deliveries/start
@@ -144,6 +144,13 @@ module Api
         else
           render json: { error: "Only delivery personnel can access this endpoint" }, status: :unauthorized
         end
+      end
+      
+      def api_not_found
+        render json: { 
+          error: "Not found", 
+          message: "The requested delivery endpoint does not exist. Use 'complete' instead of partial URLs." 
+        }, status: :not_found
       end
       
       private
