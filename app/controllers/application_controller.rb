@@ -1,6 +1,14 @@
 class ApplicationController < ActionController::Base
+  include ApiErrorHandling
+  
   skip_before_action :verify_authenticity_token
   before_action :authenticate_request
+  
+  # Add error handling for API requests
+  rescue_from StandardError, with: :handle_server_error
+  rescue_from ActiveRecord::RecordNotFound, with: :handle_not_found
+  rescue_from ActionController::RoutingError, with: :handle_not_found
+  rescue_from ActionController::ParameterMissing, with: :handle_bad_request
   
   attr_reader :current_user
   
@@ -18,5 +26,36 @@ class ApplicationController < ActionController::Base
     rescue JWT::DecodeError => e
       render json: { errors: e.message }, status: :unauthorized
     end
+  end
+  
+  def handle_server_error(exception)
+    Rails.logger.error "Server Error: #{exception.message}"
+    Rails.logger.error exception.backtrace.join("\n")
+    
+    render json: { 
+      error: "Internal server error", 
+      message: Rails.env.development? ? exception.message : "Something went wrong" 
+    }, status: :internal_server_error
+  end
+  
+  def handle_not_found(exception)
+    render json: { 
+      error: "Not found", 
+      message: exception.message 
+    }, status: :not_found
+  end
+  
+  def handle_bad_request(exception)
+    render json: { 
+      error: "Bad request", 
+      message: exception.message 
+    }, status: :bad_request
+  end
+  
+  def api_not_found
+    render json: { 
+      error: "Not found", 
+      message: "The requested API endpoint does not exist" 
+    }, status: :not_found
   end
 end

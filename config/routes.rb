@@ -60,6 +60,9 @@ Rails.application.routes.draw do
         get '/customers', to: 'deliveries#customers'
         get '/today_summary', to: 'deliveries#today_summary'
       end
+      
+      # Catch-all route for unmatched API paths
+      match '*path', to: 'application#api_not_found', via: :all
     end
   end
 end
