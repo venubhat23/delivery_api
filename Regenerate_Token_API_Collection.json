@@ -1,0 +1,488 @@
+{
+  "info": {
+    "name": "Regenerate Token API Collection",
+    "description": "Postman collection for the regenerate token API endpoint. This allows authenticated users to regenerate their JWT tokens when they expire or are compromised. The API supports all user roles: customer, admin, and delivery_person.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string",
+      "description": "Base URL for the API server"
+    },
+    {
+      "key": "api_base",
+      "value": "{{base_url}}/api/v1",
+      "type": "string",
+      "description": "API base URL with version"
+    },
+    {
+      "key": "auth_token",
+      "value": "your-bearer-token-here",
+      "type": "string",
+      "description": "Current JWT token for authentication"
+    },
+    {
+      "key": "customer_token",
+      "value": "",
+      "type": "string",
+      "description": "Customer JWT token"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string",
+      "description": "Admin JWT token"
+    },
+    {
+      "key": "delivery_person_token",
+      "value": "",
+      "type": "string",
+      "description": "Delivery person JWT token"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "🔄 Token Regeneration",
+      "description": "Regenerate JWT tokens for authenticated users",
+      "item": [
+        {
+          "name": "Regenerate Token - Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{customer_token}}",
+                "description": "Customer JWT token"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/regenerate_token",
+              "host": ["{{api_base}}"],
+              "path": ["regenerate_token"]
+            },
+            "description": "Regenerate JWT token for a customer. Returns new token with customer and user information."
+          },
+          "response": [
+            {
+              "name": "Success Response - Customer",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{customer_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "{{api_base}}/regenerate_token",
+                  "host": ["{{api_base}}"],
+                  "path": ["regenerate_token"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoyLCJjdXN0b21lcl9pZCI6MSwiZXhwIjoxNzA2MjYwODAwfQ.example_token_here\",\n  \"user\": {\n    \"id\": 2,\n    \"name\": \"John Customer\",\n    \"role\": \"customer\",\n    \"email\": \"customer@example.com\",\n    \"phone\": \"+919876543210\"\n  },\n  \"customer\": {\n    \"id\": 1,\n    \"name\": \"John Customer\",\n    \"address\": \"123 Main Street\",\n    \"phone_number\": \"+919876543210\",\n    \"email\": \"customer@example.com\",\n    \"preferred_language\": \"en\",\n    \"delivery_time_preference\": \"morning\",\n    \"notification_method\": \"sms\"\n  },\n  \"message\": \"Token regenerated successfully\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Regenerate Token - Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}",
+                "description": "Admin JWT token"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/regenerate_token",
+              "host": ["{{api_base}}"],
+              "path": ["regenerate_token"]
+            },
+            "description": "Regenerate JWT token for an admin user. Returns new token with admin user information."
+          },
+          "response": [
+            {
+              "name": "Success Response - Admin",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "{{api_base}}/regenerate_token",
+                  "host": ["{{api_base}}"],
+                  "path": ["regenerate_token"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJleHAiOjE3MDYyNjA4MDB9.example_admin_token_here\",\n  \"user\": {\n    \"id\": 1,\n    \"name\": \"Admin User\",\n    \"role\": \"admin\",\n    \"email\": \"admin@example.com\",\n    \"phone\": \"+919876543200\"\n  },\n  \"message\": \"Token regenerated successfully\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Regenerate Token - Delivery Person",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{delivery_person_token}}",
+                "description": "Delivery person JWT token"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/regenerate_token",
+              "host": ["{{api_base}}"],
+              "path": ["regenerate_token"]
+            },
+            "description": "Regenerate JWT token for a delivery person. Returns new token with delivery person user information."
+          },
+          "response": [
+            {
+              "name": "Success Response - Delivery Person",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{delivery_person_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "{{api_base}}/regenerate_token",
+                  "host": ["{{api_base}}"],
+                  "path": ["regenerate_token"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJleHAiOjE3MDYyNjA4MDB9.example_delivery_token_here\",\n  \"user\": {\n    \"id\": 3,\n    \"name\": \"Delivery Person\",\n    \"role\": \"delivery_person\",\n    \"email\": \"delivery@example.com\",\n    \"phone\": \"+919876543211\"\n  },\n  \"message\": \"Token regenerated successfully\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "🔐 Authentication Setup",
+      "description": "Helper endpoints to get initial tokens for testing",
+      "item": [
+        {
+          "name": "Customer Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+919876543210\",\n  \"password\": \"password123\",\n  \"role\": \"customer\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/login",
+              "host": ["{{api_base}}"],
+              "path": ["login"]
+            },
+            "description": "Login as customer to get initial token for testing regenerate token API"
+          }
+        },
+        {
+          "name": "Admin Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+919876543200\",\n  \"password\": \"admin123\",\n  \"role\": \"admin\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/login",
+              "host": ["{{api_base}}"],
+              "path": ["login"]
+            },
+            "description": "Login as admin to get initial token for testing regenerate token API"
+          }
+        },
+        {
+          "name": "Delivery Person Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+919876543211\",\n  \"password\": \"delivery123\",\n  \"role\": \"delivery_person\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/login",
+              "host": ["{{api_base}}"],
+              "path": ["login"]
+            },
+            "description": "Login as delivery person to get initial token for testing regenerate token API"
+          }
+        }
+      ]
+    },
+    {
+      "name": "⚠️ Error Scenarios",
+      "description": "Test error scenarios for the regenerate token API",
+      "item": [
+        {
+          "name": "Unauthorized - No Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/regenerate_token",
+              "host": ["{{api_base}}"],
+              "path": ["regenerate_token"]
+            },
+            "description": "Test regenerate token API without providing authorization header"
+          },
+          "response": [
+            {
+              "name": "Unauthorized Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "{{api_base}}/regenerate_token",
+                  "host": ["{{api_base}}"],
+                  "path": ["regenerate_token"]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"Authentication required\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Unauthorized - Invalid Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer invalid_token_here",
+                "description": "Invalid JWT token"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{api_base}}/regenerate_token",
+              "host": ["{{api_base}}"],
+              "path": ["regenerate_token"]
+            },
+            "description": "Test regenerate token API with invalid JWT token"
+          },
+          "response": [
+            {
+              "name": "Invalid Token Response",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer invalid_token_here"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "url": {
+                  "raw": "{{api_base}}/regenerate_token",
+                  "host": ["{{api_base}}"],
+                  "path": ["regenerate_token"]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"errors\": \"Invalid token\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

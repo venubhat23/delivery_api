@@ -192,6 +192,32 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Regenerate Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{auth_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{api_base}}/regenerate_token",
+              "host": ["{{api_base}}"],
+              "path": ["regenerate_token"]
+            }
+          },
+          "response": []
         }
       ]
     },
