@@ -1,7 +1,7 @@
 module Api
   module V1
     class AuthenticationController < ApplicationController
-      skip_before_action :authenticate_request, only: [:login, :signup, :customer_login]
+      skip_before_action :authenticate_request, only: [:login, :signup, :customer_login, :regenerate_token]
 
       # POST /api/v1/login
       def login
@@ -115,54 +115,31 @@ module Api
 
       # POST /api/v1/regenerate_token
       def regenerate_token
-        if current_user
-          # Check if the current user is a customer with associated customer record
-          if current_user.customer?
-            @customer = Customer.find_by(user: current_user)
-            if @customer
-              token = JsonWebToken.encode(user_id: current_user.id, customer_id: @customer.id)
-              render json: { 
-                token: token, 
-                user: { 
-                  id: current_user.id, 
-                  name: current_user.name, 
-                  role: current_user.role,
-                  email: current_user.email,
-                  phone: current_user.phone
-                },
-                customer: {
-                  id: @customer.id,
-                  name: @customer.name,
-                  address: @customer.address,
-                  phone_number: @customer.phone_number,
-                  email: @customer.email,
-                  preferred_language: @customer.preferred_language,
-                  delivery_time_preference: @customer.delivery_time_preference,
-                  notification_method: @customer.notification_method
-                },
-                message: 'Token regenerated successfully'
-              }, status: :ok
-            else
-              render json: { error: 'Customer record not found' }, status: :unprocessable_entity
-            end
-          else
-            # For admin and delivery_person roles
-            token = JsonWebToken.encode(user_id: current_user.id)
+        debugger
+
+        if params[:role] == 'customer'
+          customer_login
+        else
+          # For admin and delivery_person
+          @user = User.find_by(phone: params[:phone])
+          
+          if @user&.authenticate(params[:password]) && %w[admin delivery_person].include?(@user.role)
+            token = JsonWebToken.encode(user_id: @user.id)
             render json: { 
               token: token, 
               user: { 
-                id: current_user.id, 
-                name: current_user.name, 
-                role: current_user.role,
-                email: current_user.email,
-                phone: current_user.phone
-              },
-              message: 'Token regenerated successfully'
+                id: @user.id, 
+                name: @user.name, 
+                role: @user.role,
+                email: @user.email,
+                phone: @user.phone
+              } 
             }, status: :ok
+          else
+            render json: { error: 'Invalid credentials' }, status: :unauthorized
           end
-        else
-          render json: { error: 'Authentication required' }, status: :unauthorized
         end
+
       end
 
       private
