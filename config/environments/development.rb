@@ -32,7 +32,7 @@ Rails.application.configure do
 
     config.cache_store = :null_store
   end
-  config.action_controller.raise_on_missing_callback_actions = false
+  
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
@@ -72,5 +72,5 @@ Rails.application.configure do
   # config.action_cable.disable_request_forgery_protection = true
 
   # Raise error when a before_action's only/except options reference missing actions
-  config.action_controller.raise_on_missing_callback_actions = true
+  config.action_controller.raise_on_missing_callback_actions = false
 end
