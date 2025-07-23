@@ -41,7 +41,7 @@ module Api
               customer: @customer,
               user_id: delivery_schedule.user_id,
               product: product,
-              scheduled_date: order_date,
+              scheduled_date: delivery_date,
               quantity: item[:quantity],
               unit: item[:unit],
               status: 'pending'
@@ -54,7 +54,7 @@ module Api
             message: "Order placed successfully",
             delivery_schedule_id: delivery_schedule.id,
             assignments_created: assignments_created,
-            order_date: order_date,
+            order_date: delivery_date,
             customer_address: params[:customer_address],
             delivery_slot: params[:delivery_slot]
           }, status: :created
