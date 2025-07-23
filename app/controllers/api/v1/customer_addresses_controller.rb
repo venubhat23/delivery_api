@@ -1,60 +1,95 @@
 module Api
   module V1
     class CustomerAddressesController < ApplicationController
-      before_action :set_customer_address, only: [:show, :update, :destroy]
+      before_action :set_customer, only: [:show, :update, :destroy]
       
       # POST /api/v1/customer_address
       def create
-        @customer_address = CustomerAddress.new(customer_address_params)
+        # For create, we need customer_id to find the customer
+        if params[:customer_id].blank?
+          return render json: { errors: ["Customer ID is required"] }, status: :unprocessable_entity
+        end
         
-        if @customer_address.save
-          render json: @customer_address, status: :created
+        @customer = Customer.find_by(id: params[:customer_id])
+        unless @customer
+          return render json: { errors: ["Customer not found"] }, status: :not_found
+        end
+        
+        # Set address API context for validations
+        @customer.address_api_context = true
+        
+        if @customer.update(customer_address_params)
+          render json: @customer.as_json(address_api_format: true), status: :created
         else
-          render json: { errors: @customer_address.errors.full_messages }, status: :unprocessable_entity
+          render json: { errors: @customer.errors.full_messages }, status: :unprocessable_entity
         end
       end
 
       # GET /api/v1/customer_address/:id
       def show
-        render json: @customer_address, status: :ok
+        render json: @customer.as_json(address_api_format: true), status: :ok
       end
       
       # PUT/PATCH /api/v1/customer_address/:id
       def update
-        if @customer_address.update(customer_address_params)
-          render json: @customer_address, status: :ok
+        # Set address API context for validations
+        @customer.address_api_context = true
+        
+        if @customer.update(customer_address_params)
+          render json: @customer.as_json(address_api_format: true), status: :ok
         else
-          render json: { errors: @customer_address.errors.full_messages }, status: :unprocessable_entity
+          render json: { errors: @customer.errors.full_messages }, status: :unprocessable_entity
         end
       end
       
-      # DELETE /api/v1/customer_address/:id (optional, not in requirements but good to have)
+      # DELETE /api/v1/customer_address/:id (optional, clears address fields)
       def destroy
-        @customer_address.destroy
-        render json: { message: "Customer address deleted successfully" }, status: :ok
+        address_fields = {
+          address_line: nil,
+          city: nil,
+          state: nil,
+          postal_code: nil,
+          country: nil,
+          landmark: nil,
+          full_address: nil,
+          longitude: nil,
+          latitude: nil
+        }
+        
+        if @customer.update(address_fields)
+          render json: { message: "Customer address cleared successfully" }, status: :ok
+        else
+          render json: { errors: @customer.errors.full_messages }, status: :unprocessable_entity
+        end
       end
       
-      # GET /api/v1/customer_addresses (optional, to get all addresses for a customer)
+      # GET /api/v1/customer_addresses (optional, to get addresses for customers)
       def index
         if params[:customer_id].present?
-          @customer_addresses = CustomerAddress.where(customer_id: params[:customer_id])
+          @customer = Customer.find_by(id: params[:customer_id])
+          if @customer
+            render json: [@customer.as_json(address_api_format: true)], status: :ok
+          else
+            render json: { error: "Customer not found" }, status: :not_found
+          end
         else
-          @customer_addresses = CustomerAddress.all
+          # Return all customers with address information
+          @customers = Customer.active
+          addresses = @customers.map { |customer| customer.as_json(address_api_format: true) }
+          render json: addresses, status: :ok
         end
-        
-        render json: @customer_addresses, status: :ok
       end
  
       private
       
-      def set_customer_address
-        @customer_address = CustomerAddress.find(params[:id])
+      def set_customer
+        @customer = Customer.find(params[:id])
       rescue ActiveRecord::RecordNotFound
-        render json: { error: "Customer address not found" }, status: :not_found
+        render json: { error: "Customer not found" }, status: :not_found
       end
       
       def customer_address_params
-        params.permit(:customer_id, :address_line, :city, :state, :postal_code, 
+        params.permit(:address_line, :city, :state, :postal_code, 
                       :country, :phone_number, :landmark, :full_address, 
                       :longitude, :latitude)
       end

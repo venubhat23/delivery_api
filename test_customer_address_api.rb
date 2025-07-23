@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-# Test script for Customer Address API
+# Test script for Customer Address API (using customers table)
 # This demonstrates the API endpoints and their expected behavior
 
 require 'net/http'
@@ -46,11 +46,12 @@ def make_request(method, endpoint, data = nil)
   end
 end
 
-puts "=== Customer Address API Test ==="
+puts "=== Customer Address API Test (Using Customers Table) ==="
 
-# Test data
+# Test data - Note: customer_id should be an existing customer ID
+customer_id = 1 # Change this to an existing customer ID
 address_data = {
-  customer_id: 123,
+  customer_id: customer_id,
   address_line: "1234 MG Road",
   city: "Bangalore",
   state: "Karnataka",
@@ -63,24 +64,22 @@ address_data = {
   latitude: 12.9716
 }
 
-# 1. Create Address
-puts "\n1. Creating Address..."
+# 1. Create/Update Address for Customer
+puts "\n1. Creating/Updating Address for Customer #{customer_id}..."
 puts "POST /api/v1/customer_address"
 puts "Data: #{address_data.to_json}"
 create_response = make_request('POST', '/customer_address', address_data)
 puts "Response: #{create_response}"
 
-if create_response[:body].is_a?(Hash) && create_response[:body]['id']
-  address_id = create_response[:body]['id']
-  
+if create_response[:status] == '201' || create_response[:status] == '200'
   # 2. Read Address
-  puts "\n2. Reading Address..."
-  puts "GET /api/v1/customer_address/#{address_id}"
-  read_response = make_request('GET', "/customer_address/#{address_id}")
+  puts "\n2. Reading Address for Customer #{customer_id}..."
+  puts "GET /api/v1/customer_address/#{customer_id}"
+  read_response = make_request('GET', "/customer_address/#{customer_id}")
   puts "Response: #{read_response}"
   
   # 3. Update Address
-  puts "\n3. Updating Address..."
+  puts "\n3. Updating Address for Customer #{customer_id}..."
   update_data = {
     address_line: "4321 Residency Road",
     city: "Bangalore",
@@ -90,20 +89,20 @@ if create_response[:body].is_a?(Hash) && create_response[:body]['id']
     longitude: 77.6101,
     latitude: 12.9352
   }
-  puts "PATCH /api/v1/customer_address/#{address_id}"
+  puts "PATCH /api/v1/customer_address/#{customer_id}"
   puts "Data: #{update_data.to_json}"
-  update_response = make_request('PATCH', "/customer_address/#{address_id}", update_data)
+  update_response = make_request('PATCH', "/customer_address/#{customer_id}", update_data)
   puts "Response: #{update_response}"
 else
-  puts "Failed to create address, skipping read and update tests"
+  puts "Failed to create/update address. Make sure customer ID #{customer_id} exists."
 end
 
 puts "\n=== API Documentation ==="
 puts <<~DOC
   
-  Customer Address API Endpoints:
+  Customer Address API Endpoints (Using Customers Table):
   
-  1. Create Address:
+  1. Create/Update Address:
      POST /api/v1/customer_address
      Content-Type: application/json
      
@@ -123,10 +122,10 @@ puts <<~DOC
      }
   
   2. Read Address:
-     GET /api/v1/customer_address/:id
+     GET /api/v1/customer_address/:customer_id
   
   3. Update Address:
-     PUT/PATCH /api/v1/customer_address/:id
+     PUT/PATCH /api/v1/customer_address/:customer_id
      Content-Type: application/json
      
      Request Body (partial update supported):
@@ -140,9 +139,14 @@ puts <<~DOC
        "latitude": 12.9352
      }
   
-  4. Delete Address (optional):
-     DELETE /api/v1/customer_address/:id
+  4. Clear Address (optional):
+     DELETE /api/v1/customer_address/:customer_id
   
-  5. List Addresses (optional):
+  5. List Customer Addresses (optional):
      GET /api/v1/customer_addresses?customer_id=123
+     GET /api/v1/customer_addresses (all customers)
+     
+  Note: This implementation uses the existing customers table.
+  The customer_id in the request body for POST should match an existing customer.
+  The :id parameter in the URL refers to the customer ID, not a separate address ID.
 DOC
