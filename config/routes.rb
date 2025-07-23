@@ -18,6 +18,14 @@ Rails.application.routes.draw do
         end
       end
       
+      # Customer Address routes
+      post '/customer_address', to: 'customer_addresses#create'
+      get '/customer_address/:id', to: 'customer_addresses#show'
+      put '/customer_address/:id', to: 'customer_addresses#update'
+      patch '/customer_address/:id', to: 'customer_addresses#update'
+      delete '/customer_address/:id', to: 'customer_addresses#destroy'
+      get '/customer_addresses', to: 'customer_addresses#index'
+      
       # Products routes
       resources :products do
         collection do
