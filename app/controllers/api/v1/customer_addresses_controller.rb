@@ -18,7 +18,10 @@ module Api
         # Set address API context for validations
         @customer.address_api_context = true
         
-        if @customer.update(customer_address_params)
+        # Process parameters to handle existing field mapping
+        processed_params = process_address_params(customer_address_params)
+        
+        if @customer.update(processed_params)
           render json: @customer.as_json(address_api_format: true), status: :created
         else
           render json: { errors: @customer.errors.full_messages }, status: :unprocessable_entity
@@ -35,7 +38,10 @@ module Api
         # Set address API context for validations
         @customer.address_api_context = true
         
-        if @customer.update(customer_address_params)
+        # Process parameters to handle existing field mapping
+        processed_params = process_address_params(customer_address_params)
+        
+        if @customer.update(processed_params)
           render json: @customer.as_json(address_api_format: true), status: :ok
         else
           render json: { errors: @customer.errors.full_messages }, status: :unprocessable_entity
@@ -46,11 +52,12 @@ module Api
       def destroy
         address_fields = {
           address_line: nil,
+          address: nil, # Clear existing address field too
           city: nil,
           state: nil,
           postal_code: nil,
           country: nil,
-          landmark: nil,
+          address_landmark: nil, # Clear existing landmark field
           full_address: nil,
           longitude: nil,
           latitude: nil
@@ -92,6 +99,23 @@ module Api
         params.permit(:address_line, :city, :state, :postal_code, 
                       :country, :phone_number, :landmark, :full_address, 
                       :longitude, :latitude)
+      end
+      
+      def process_address_params(params)
+        processed = params.dup
+        
+        # Map address_line to both address_line (new field) and address (existing field)
+        if params[:address_line].present?
+          processed[:address] = params[:address_line] # Update existing address field too
+        end
+        
+        # Map landmark to address_landmark (existing field)
+        if params[:landmark].present?
+          processed[:address_landmark] = params[:landmark]
+          processed.delete(:landmark) # Remove landmark since we're using address_landmark
+        end
+        
+        processed
       end
     end
   end
