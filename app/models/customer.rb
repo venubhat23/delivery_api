@@ -1,4 +1,9 @@
 class Customer < ApplicationRecord
+  has_secure_password
+  
+  # Virtual attribute for password confirmation
+  attr_accessor :password_confirmation
+
   belongs_to :user
   belongs_to :delivery_person, class_name: 'User', optional: true
   has_many :deliveries, dependent: :destroy
@@ -21,7 +26,6 @@ class Customer < ApplicationRecord
   validates :latitude, presence: true, numericality: { greater_than_or_equal_to: -90, less_than_or_equal_to: 90 }, if: :address_api_context?
   
   # Custom validation for address_line (use existing address field if address_line is blank)
-  validate :address_line_or_address_present, if: :address_api_context?
   
   reverse_geocoded_by :latitude, :longitude
   
@@ -37,14 +41,12 @@ class Customer < ApplicationRecord
       {
         id: id,
         customer_id: id, # For API compatibility
-        address_line: get_address_line,
         city: city,
         state: state,
         postal_code: postal_code,
-        country: country,
         phone_number: phone_number,
         landmark: get_landmark,
-        full_address: get_full_address,
+        full_address: address,
         longitude: longitude,
         latitude: latitude
       }
@@ -71,12 +73,10 @@ class Customer < ApplicationRecord
     
     # Generate full_address from components
     parts = []
-    parts << get_address_line if get_address_line.present?
     parts << get_landmark if get_landmark.present?
     parts << city if city.present?
     parts << state if state.present?
     parts << postal_code if postal_code.present?
-    parts << country if country.present?
     parts.join(', ')
   end
   

@@ -31,19 +31,12 @@ module Api
 
       # POST /api/v1/customer_login
       def customer_login
-        @customer = Customer.joins(:user).find_by(users: { phone: params[:phone] })
+        @customer = Customer.find_by(phone_number: params[:phone])
         
-        if @customer&.user&.authenticate(params[:password]) && @customer.user.customer?
-          token = JsonWebToken.encode(user_id: @customer.user.id, customer_id: @customer.id)
+        if @customer&.authenticate(params[:password]) && @customer.is_active?
+          token = JsonWebToken.encode(customer_id: @customer.id)
           render json: { 
             token: token, 
-            user: { 
-              id: @customer.user.id, 
-              name: @customer.user.name, 
-              role: @customer.user.role,
-              email: @customer.user.email,
-              phone: @customer.user.phone
-            },
             customer: {
               id: @customer.id,
               name: @customer.name,
@@ -56,9 +49,10 @@ module Api
             }
           }, status: :ok
         else
-          render json: { error: 'Invalid credentials' }, status: :unauthorized
+          render json: { error: 'Invalid credentials or account inactive' }, status: :unauthorized
         end
       end
+
 
       # POST /api/v1/signup
       def signup

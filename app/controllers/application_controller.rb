@@ -21,7 +21,11 @@ class ApplicationController < ActionController::Base
     begin
       @decoded = JsonWebToken.decode(header)
       if @decoded.present?
-       @current_user = User.find(@decoded[:user_id])
+        if @decoded[:user_id].present?
+          @current_user = User.find(@decoded[:user_id])
+        elsif @decoded[:customer_id].present?
+          @current_user = Customer.find(@decoded[:customer_id])
+        end
       else
         render json: { errors: "Token is expired or invalid" }, status: :unauthorized
       end

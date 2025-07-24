@@ -30,17 +30,15 @@ module Api
 
       # GET /api/v1/customer_address/:id
       def show
-        render json: @customer.as_json(address_api_format: true), status: :ok
+        render json: @customer.as_json, status: :ok
       end
       
       # PUT/PATCH /api/v1/customer_address/:id
       def update
         # Set address API context for validations
-        @customer.address_api_context = true
         
         # Process parameters to handle existing field mapping
         processed_params = process_address_params(customer_address_params)
-        
         if @customer.update(processed_params)
           render json: @customer.as_json(address_api_format: true), status: :ok
         else
@@ -96,7 +94,7 @@ module Api
       end
       
       def customer_address_params
-        params.permit(:address_line, :city, :state, :postal_code, 
+        params.permit( :city, :state, :postal_code, 
                       :country, :phone_number, :landmark, :full_address, 
                       :longitude, :latitude)
       end
@@ -105,9 +103,7 @@ module Api
         processed = params.dup
         
         # Map address_line to both address_line (new field) and address (existing field)
-        if params[:address_line].present?
-          processed[:address] = params[:address_line] # Update existing address field too
-        end
+
         
         # Map landmark to address_landmark (existing field)
         if params[:landmark].present?
@@ -115,6 +111,10 @@ module Api
           processed.delete(:landmark) # Remove landmark since we're using address_landmark
         end
         
+        if params[:full_address].present?
+          processed[:address] = params[:full_address]
+          processed.delete(:full_address) # Remove landmark since we're using address_landmark
+        end
         processed
       end
     end

@@ -15,7 +15,6 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'pry'
 gem 'jwt', '~> 2.3'
 gem 'geocoder'
-gem 'rqrcode'
 
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
