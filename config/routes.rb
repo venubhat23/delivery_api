@@ -62,6 +62,9 @@ Rails.application.routes.draw do
       # Delivery items routes (for individual item operations)
       resources :delivery_items, only: [:show, :update, :destroy]
       
+      # Bank details route
+      get '/bank_details', to: 'bank_details#show'
+      
       # Legacy delivery routes (keeping for backward compatibility)
       scope :deliveries do
         post '/start', to: 'deliveries#start'

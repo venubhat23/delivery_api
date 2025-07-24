@@ -212,4 +212,20 @@ assignment4 = DeliveryAssignment.create!(
   status: 'pending'
 )
 
+# Create default admin settings
+AdminSetting.create!(
+  business_name: 'Atma Nirbhar Farm',
+  address: '123 Farm Road, Rural Area, Karnataka',
+  mobile: '+919876543210',
+  email: 'admin@atmanirbharfarm.com',
+  gstin: '29AAAAA0000A1Z5',
+  pan_number: 'AAAAA0000A',
+  account_holder_name: 'Atma Nirbhar Farm',
+  bank_name: 'Canara Bank',
+  account_number: '3194201000718',
+  ifsc_code: 'CNRB0003194',
+  upi_id: 'atmanirbharfarm@canara',
+  terms_and_conditions: "Kindly make your monthly payment on or before the 10th of every month.\nPlease share the payment screenshot immediately after completing the transaction to confirm your payment."
+)
+
 puts "Seed data created successfully!"
