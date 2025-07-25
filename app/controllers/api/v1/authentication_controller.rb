@@ -56,24 +56,20 @@ module Api
 
       # POST /api/v1/signup
       def signup
-        @user = User.new(user_params)
-        
+        if params[:role] == "customer"
+          @user1 = User.first
+          @user = Customer.new(customer_params.merge(user: @user1))
+        else
+          @user = User.new(user_params)
+        end
         if @user.save
           # If role is customer, create customer record
-          if @user.customer?
-            @customer = Customer.new(customer_params.merge(user: @user))
-            
-            if @customer.save
-              token = JsonWebToken.encode(user_id: @user.id, customer_id: @customer.id)
+          if params[:role] == "customer"
+              @customer = @user
+              token = JsonWebToken.encode(customer_id: @user.id)
+
               render json: { 
-                token: token, 
-                user: { 
-                  id: @user.id, 
-                  name: @user.name, 
-                  role: @user.role,
-                  email: @user.email,
-                  phone: @user.phone
-                },
+                token: token,
                 customer: {
                   id: @customer.id,
                   name: @customer.name,
@@ -84,10 +80,6 @@ module Api
                   longitude: @customer.longitude
                 }
               }, status: :created
-            else
-              @user.destroy # Rollback user creation if customer creation fails
-              render json: { errors: @customer.errors.full_messages }, status: :unprocessable_entity
-            end
           else
             # For admin and delivery_person roles
             token = JsonWebToken.encode(user_id: @user.id)
@@ -143,7 +135,7 @@ module Api
       end
 
       def customer_params
-        params.permit(:name, :address, :phone_number, :email, :latitude, :longitude, 
+        params.permit(:name,:password, :address, :phone_number, :email, :latitude, :longitude, 
                      :preferred_language, :delivery_time_preference, :notification_method, 
                      :address_type, :address_landmark, :alt_phone_number)
       end
