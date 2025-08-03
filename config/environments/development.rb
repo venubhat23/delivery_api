@@ -7,6 +7,14 @@ Rails.application.configure do
   # it changes. This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
   config.enable_reloading = true
+  config.hosts = [
+    "atmanirbharfarm.work.gd",     # Allow requests from main domain
+    /.*\.atmanirbharfarm\.work\.gd/, # Allow requests from subdomains
+    ENV['APP_HOST'],                 # Allow requests from environment-specific host
+    "gnu-modern-totally.ngrok-free.app",
+    "atmanirbharfarm.work.gd",
+    "13.232.153.224"                # Allow requests from the production server IP
+  ].compact
 
   # Do not eager load code on boot.
   config.eager_load = false
