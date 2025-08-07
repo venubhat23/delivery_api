@@ -70,6 +70,8 @@ module Api
                 customer: nearest_delivery.customer.as_json(except: [:user_id]),
                 products: nearest_delivery.product
               },
+              delivery_quantity: nearest_delivery.quantity,
+              delivery_unit: nearest_delivery.unit,
               delivery_id: nearest_delivery.id,
               customer: nearest_delivery.customer.as_json(except: [:user_id]),
               products: nearest_delivery.product
