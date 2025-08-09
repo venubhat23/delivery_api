@@ -63,7 +63,7 @@ module Api
           if nearest_delivery
             nearest_delivery.update(status: 'in_progress')
             render json: {
-              message: "Delivery completed successfully",
+              message: null,
               completed_delivery_id: @delivery.id,
               next_delivery: {
                 delivery_id: nearest_delivery.id,
