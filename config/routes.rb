@@ -40,6 +40,13 @@ Rails.application.routes.draw do
       # Subscriptions routes (multi-day subscriptions)
       resources :subscriptions, only: [:index, :create, :update, :destroy]
       
+      # New APIs
+      resources :advertisements, only: [:index]
+      resources :invoices, only: [:index]
+      get '/settings', to: 'settings#show'
+      resources :vacations, only: [:index, :create]
+      post '/refresh', to: 'refresh#create'
+      
       # Delivery assignments routes
       resources :delivery_assignments, only: [:index, :show] do
         collection do
