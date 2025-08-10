@@ -10,11 +10,12 @@ class Customer < ApplicationRecord
   has_many :delivery_schedules, dependent: :destroy
   has_many :delivery_assignments, dependent: :restrict_with_error
   has_many :invoices, dependent: :destroy
+  has_many :vacations, dependent: :destroy
   
   # Delegate user attributes for convenience
   delegate :name, to: :user, prefix: true, allow_nil: true
   delegate :email, :phone, to: :user, allow_nil: true
-
+  
   validates :name, presence: true
   
   # Address validations (only when address fields are being updated via API)
