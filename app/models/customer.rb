@@ -11,6 +11,7 @@ class Customer < ApplicationRecord
   has_many :delivery_assignments, dependent: :restrict_with_error
   has_many :invoices, dependent: :destroy
   has_many :refresh_tokens, dependent: :destroy
+  has_many :user_vacations, dependent: :destroy
   
   # Delegate user attributes for convenience
   delegate :name, to: :user, prefix: true, allow_nil: true
@@ -101,6 +102,14 @@ class Customer < ApplicationRecord
   
   def primary_email
     email.presence || user&.email
+  end
+
+  def has_active_vacation_on?(date)
+    user_vacations.active.overlapping_with(date, date).exists?
+  end
+
+  def active_vacation_on(date)
+    user_vacations.active.overlapping_with(date, date).first
   end
   
   private

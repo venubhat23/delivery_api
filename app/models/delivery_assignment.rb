@@ -7,7 +7,7 @@ class DeliveryAssignment < ApplicationRecord
   has_many :delivery_items, dependent: :destroy
 
   validates :scheduled_date, presence: true
-  validates :status, inclusion: { in: %w(pending in_progress completed cancelled) }
+  validates :status, inclusion: { in: %w(pending in_progress completed cancelled scheduled skipped_vacation cancelled_user delivered failed) }
   validates :quantity, presence: true, numericality: { greater_than: 0 }
   validates :unit, presence: true
   
@@ -21,6 +21,8 @@ class DeliveryAssignment < ApplicationRecord
   scope :by_delivery_person, ->(user_id) { where(user_id: user_id) }
   scope :by_date_range, ->(start_date, end_date) { where(scheduled_date: start_date..end_date) }
   scope :invoice_pending, -> { where(invoice_generated: false) }
+  scope :scheduled, -> { where(status: 'scheduled') }
+  scope :skipped_vacation, -> { where(status: 'skipped_vacation') }
   
   def as_json(options = {})
     super(options.merge(
@@ -44,10 +46,14 @@ class DeliveryAssignment < ApplicationRecord
   end
   
   def can_be_started?
-    status == 'pending' && scheduled_date <= Date.today
+    (status == 'pending' || status == 'scheduled') && scheduled_date <= Date.today
   end
   
   def overdue?
-    status == 'pending' && scheduled_date < Date.today
+    (status == 'pending' || status == 'scheduled') && scheduled_date < Date.today
+  end
+
+  def skipped_for_vacation?
+    status == 'skipped_vacation'
   end
 end
