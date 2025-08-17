@@ -39,10 +39,11 @@ module Api
       end
 
       def build_summary(relation)
-        counts_by_status = relation.group(:status).count
-        total_amount = relation.sum(:total_amount).to_f
+        relation_without_order = relation.except(:order)
+        counts_by_status = relation_without_order.group(:status).count
+        total_amount = relation_without_order.sum(:total_amount).to_f
         {
-          total_count: relation.count,
+          total_count: relation_without_order.count,
           total_amount: total_amount,
           pending_count: counts_by_status['pending'] || 0,
           paid_count: counts_by_status['paid'] || 0,
