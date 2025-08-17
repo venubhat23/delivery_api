@@ -35,21 +35,27 @@ module Api
           assignments_created = 0
           current_date = start_date
           
+          # Preload vacation ranges for the customer
+          vacation_ranges = active_vacation_ranges(@customer.id, start_date, end_date)
+          
           # Create delivery assignments for each day in the subscription period
           while current_date <= end_date
             # Skip Sundays if business requirement (can be configured)
             unless current_date.sunday? && params[:skip_sundays] == 'true'
-              DeliveryAssignment.create!(
-                delivery_schedule: delivery_schedule,
-                customer: @customer,
-                user_id: delivery_schedule.user_id,
-                product: product,
-                scheduled_date: current_date,
-                quantity: quantity,
-                unit: unit,
-                status: 'pending'
-              )
-              assignments_created += 1
+              # Skip dates covered by active vacations
+              unless date_in_any_range?(current_date, vacation_ranges)
+                DeliveryAssignment.create!(
+                  delivery_schedule: delivery_schedule,
+                  customer: @customer,
+                  user_id: delivery_schedule.user_id,
+                  product: product,
+                  scheduled_date: current_date,
+                  quantity: quantity,
+                  unit: unit,
+                  status: 'pending'
+                )
+                assignments_created += 1
+              end
             end
             current_date += 1.day
           end
@@ -191,6 +197,17 @@ module Api
           quantity: subscription.default_quantity,
           unit: subscription.default_unit
         )
+      end
+
+      def active_vacation_ranges(customer_id, from_date, to_date)
+        UserVacation.for_customer(customer_id)
+                    .active_or_paused
+                    .overlapping(from_date, to_date)
+                    .pluck(:start_date, :end_date)
+      end
+
+      def date_in_any_range?(date, ranges)
+        ranges.any? { |(s, e)| s <= date && date <= e }
       end
     end
   end

@@ -584,3 +584,29 @@ List invoices for the logged-in context with a summary
   }
 }
 ```
+
+## Vacations
+
+### POST /api/v1/vacations
+Creates a vacation for a customer (inclusive date range). Existing future pending assignments in the window are marked as `skipped_vacation` subject to cutoff rules.
+
+Headers:
+- Authorization: Bearer <token>
+- Idempotency-Key: <unique-key> (optional)
+
+Body:
+```
+{
+  "start_date": "YYYY-MM-DD",
+  "end_date": "YYYY-MM-DD",
+  "reason": "optional string",
+  "mergeOverlaps": true|false
+}
+```
+
+Admin override:
+- Include `customer_id` to create for a specific customer.
+
+Responses:
+- 201 Created with payload containing vacation and `affectedAssignmentsSkipped` count.
+- 409 Conflict if overlapping with an active/paused vacation and `mergeOverlaps` is false.

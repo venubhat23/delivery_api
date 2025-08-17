@@ -38,6 +38,9 @@ Rails.application.routes.draw do
       post '/place_order', to: 'orders#place_order'
       get '/orders', to: 'orders#index'
 
+      # Vacations routes (create-only for now)
+      resources :vacations, only: [:create]
+
       # Advertisements routes
       resources :advertisements, only: [:index]
 

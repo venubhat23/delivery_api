@@ -96,3 +96,50 @@ fetch('/api/v1/bank_details', {
 - QR code is regenerated each time the endpoint is called if UPI ID exists
 - All bank details are required fields except address, gstin, pan_number, and upi_id
 - Email format and UPI ID format are validated at the model level
+
+# API Documentation Addendum
+
+## POST /api/v1/vacations
+Create a vacation window for a customer. Prevents delivery assignments during the active window and marks existing future pending assignments as `skipped_vacation` (cutoff-aware).
+
+Headers:
+- Authorization: Bearer <token>
+- Idempotency-Key: <unique-key> (optional)
+
+Body:
+```
+{
+  "start_date": "YYYY-MM-DD",
+  "end_date": "YYYY-MM-DD",
+  "reason": "string (optional)",
+  "mergeOverlaps": true|false (optional, default false)
+}
+```
+
+Admin-only override:
+- Admins can create vacations for any customer by including `customer_id` in the body.
+
+Responses:
+- 201 Created
+```
+{
+  "id": 42,
+  "customer_id": 123,
+  "start_date": "2025-08-20",
+  "end_date": "2025-08-25",
+  "status": "active",
+  "reason": "Out of town",
+  "affectedAssignmentsSkipped": 4
+}
+```
+- 409 Conflict (overlap without merge)
+```
+{ "error": "Vacation overlaps with an existing active/paused vacation" }
+```
+- 400 Bad Request (invalid dates)
+- 401 Unauthorized (no/invalid token)
+
+Notes:
+- Cutoff: changes after DAILY_CUTOFF_HOUR (default 17) do not affect today.
+- Only pending assignments are modified; past dates are untouched.
+- Generators (subscriptions/schedules) avoid creating assignments within active vacations.

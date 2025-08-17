@@ -102,17 +102,26 @@ module Api
         current_date = schedule.start_date
         end_date = schedule.end_date || (current_date + 30.days) # Default 30 days if no end date
         
+        # Preload customer vacations overlapping the schedule window
+        vacation_ranges = UserVacation.for_customer(schedule.customer_id)
+                                      .active_or_paused
+                                      .overlapping(current_date, end_date)
+                                      .pluck(:start_date, :end_date)
+        
         while current_date <= end_date
-          DeliveryAssignment.create!(
-            delivery_schedule_id: schedule.id,
-            customer_id: schedule.customer_id,
-            user_id: schedule.user_id,
-            scheduled_date: current_date,
-            status: 'pending',
-            unit: params["unit"],
-            product_id: params["product_id"].to_i,
-            quantity: params["quantity"].to_i
-          )
+          # Skip dates covered by active vacations
+          unless vacation_ranges.any? { |(s, e)| s <= current_date && current_date <= e }
+            DeliveryAssignment.create!(
+              delivery_schedule_id: schedule.id,
+              customer_id: schedule.customer_id,
+              user_id: schedule.user_id,
+              scheduled_date: current_date,
+              status: 'pending',
+              unit: params["unit"],
+              product_id: params["product_id"].to_i,
+              quantity: params["quantity"].to_i
+            )
+          end
           # Increment based on frequency
           case schedule.frequency
           when 'daily'

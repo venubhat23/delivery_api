@@ -7,7 +7,7 @@ class DeliveryAssignment < ApplicationRecord
   has_many :delivery_items, dependent: :destroy
 
   validates :scheduled_date, presence: true
-  validates :status, inclusion: { in: %w(pending in_progress completed cancelled) }
+  validates :status, inclusion: { in: %w(pending in_progress completed cancelled skipped_vacation) }
   validates :quantity, presence: true, numericality: { greater_than: 0 }
   validates :unit, presence: true
   
