@@ -13,6 +13,11 @@ module Api
             return render json: { error: "Items are required" }, status: :bad_request
           end
           
+          # If delivery_date falls within an active/paused vacation, block creation
+          if UserVacation.for_customer(@customer.id).active_or_paused.overlapping(delivery_date, delivery_date).exists?
+            return render json: { error: "Cannot place order during an active vacation window" }, status: :conflict
+          end
+          
           # Create delivery schedule for this order (single day)
           delivery_schedule = DeliverySchedule.create!(
             customer: @customer,

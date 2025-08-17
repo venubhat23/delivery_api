@@ -14,7 +14,7 @@ module Api
           assignments = DeliveryAssignment.where(
             delivery_person_id: current_user.id,
             scheduled_date: Date.today..
-          ).includes(:customer)
+          ).where.not(status: 'skipped_vacation').includes(:customer)
         else
           # Customers see only their assignments
           customer = Customer.find_by(user_id: current_user.id)
