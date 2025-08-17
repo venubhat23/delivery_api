@@ -80,6 +80,17 @@ Rails.application.routes.draw do
       get '/settings/referral', to: 'settings#referral'
       get '/settings/delivery-preferences', to: 'settings#delivery_preferences'
       post '/settings/contact', to: 'settings#contact'
+
+      # Vacation routes
+      resources :vacations, only: [:index, :show, :create, :destroy] do
+        member do
+          patch :pause
+          patch :unpause
+        end
+        collection do
+          post :dry_run, to: 'vacations#dry_run'
+        end
+      end
       
       # Legacy delivery routes (keeping for backward compatibility)
       scope :deliveries do
