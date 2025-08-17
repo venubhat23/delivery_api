@@ -71,6 +71,15 @@ Rails.application.routes.draw do
       
       # Bank details route
       get '/bank_details', to: 'bank_details#show'
+
+      # Settings routes
+      get '/settings', to: 'settings#index'
+      get '/settings/faq', to: 'settings#faq'
+      get '/settings/cms/terms-of-service', to: 'settings#terms'
+      get '/settings/cms/privacy-policy', to: 'settings#privacy'
+      get '/settings/referral', to: 'settings#referral'
+      get '/settings/delivery-preferences', to: 'settings#delivery_preferences'
+      post '/settings/contact', to: 'settings#contact'
       
       # Legacy delivery routes (keeping for backward compatibility)
       scope :deliveries do
