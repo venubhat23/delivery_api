@@ -10,6 +10,7 @@ class Customer < ApplicationRecord
   has_many :delivery_schedules, dependent: :destroy
   has_many :delivery_assignments, dependent: :restrict_with_error
   has_many :invoices, dependent: :destroy
+  has_many :refresh_tokens, dependent: :destroy
   
   # Delegate user attributes for convenience
   delegate :name, to: :user, prefix: true, allow_nil: true
