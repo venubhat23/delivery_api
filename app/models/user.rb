@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_one :customer, dependent: :destroy
   has_many :delivery_schedules, foreign_key: 'delivery_person_id', dependent: :restrict_with_error
   has_many :delivery_assignments, foreign_key: 'delivery_person_id', dependent: :restrict_with_error
+  has_many :refresh_tokens, dependent: :destroy
   
   def delivery_person?
     role == 'delivery_person'

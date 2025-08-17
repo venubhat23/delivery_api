@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       post '/login', to: 'authentication#login'
       post '/customer_login', to: 'authentication#customer_login'
       post '/regenerate_token', to: 'authentication#regenerate_token'
+      post '/refresh_token', to: 'authentication#refresh_token'
       
       # Categories routes
       resources :categories, only: [:index, :show, :create, :update, :destroy]
