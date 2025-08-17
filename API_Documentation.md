@@ -528,3 +528,59 @@ development:
 ## Support
 
 For API support or questions, please contact the development team or refer to the inline code documentation.
+
+### Advertisements
+
+#### GET `/advertisements`
+List active advertisements for the logged-in context (User or Customer)
+- Headers: `Authorization: Bearer <token>`
+- Response:
+```json
+[
+  {
+    "id": 1,
+    "name": "Summer Sale",
+    "image_url": "https://cdn.example.com/ads/summer.png",
+    "start_date": "2025-08-01",
+    "end_date": "2025-08-31",
+    "status": "active",
+    "url": "https://example.com/offers/summer"
+  }
+]
+```
+
+### Invoices
+
+#### GET `/invoices`
+List invoices for the logged-in context with a summary
+- Headers: `Authorization: Bearer <token>`
+- Query Params (optional):
+  - `status` (pending|paid|overdue|cancelled)
+  - `start_date` (YYYY-MM-DD)
+  - `end_date` (YYYY-MM-DD)
+- Response:
+```json
+{
+  "invoices": [
+    {
+      "id": 12,
+      "invoice_number": "INV202508150012",
+      "invoice_type": "manual",
+      "status": "pending",
+      "invoice_date": "2025-08-15",
+      "due_date": "2025-08-22",
+      "total_amount": 1450.5,
+      "paid_at": null,
+      "customer": { "id": 3, "name": "John Doe" }
+    }
+  ],
+  "summary": {
+    "total_count": 24,
+    "total_amount": 12345.75,
+    "pending_count": 10,
+    "paid_count": 12,
+    "overdue_count": 2,
+    "cancelled_count": 0
+  }
+}
+```
