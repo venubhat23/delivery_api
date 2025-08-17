@@ -36,6 +36,12 @@ Rails.application.routes.draw do
       # Orders routes (single-day orders)
       post '/place_order', to: 'orders#place_order'
       get '/orders', to: 'orders#index'
+
+      # Advertisements routes
+      resources :advertisements, only: [:index]
+
+      # Invoices routes
+      resources :invoices, only: [:index]
       
       # Subscriptions routes (multi-day subscriptions)
       resources :subscriptions, only: [:index, :create, :update, :destroy]
