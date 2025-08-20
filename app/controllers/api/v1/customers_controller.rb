@@ -42,10 +42,15 @@ module Api
 
       # GET /api/v1/customers
       def index
-        customers = Customer.active.includes(:user, :delivery_person)
-        
-        # Filter by delivery person if provided
-        customers = customers.by_delivery_person(params[:delivery_person_id]) if params[:delivery_person_id].present?
+        # For delivery persons, only show customers assigned to them via delivery assignments
+        if current_user.delivery_person?
+          customer_ids = DeliveryAssignment.where(user_id: current_user.id).distinct.pluck(:customer_id)
+          customers = Customer.active.where(id: customer_ids).includes(:user, :delivery_person)
+        else
+          customers = Customer.active.includes(:user, :delivery_person)
+          # Filter by delivery person if provided
+          customers = customers.by_delivery_person(params[:delivery_person_id]) if params[:delivery_person_id].present?
+        end
         
         # Search by name if provided
         customers = customers.joins(:user).where("users.name ILIKE ?", "%#{params[:search]}%") if params[:search].present?
