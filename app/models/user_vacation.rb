@@ -11,6 +11,9 @@ class UserVacation < ApplicationRecord
   validate :date_range_not_too_long
   validate :start_date_not_in_past, on: :create
 
+  after_create :skip_assignments_if_active
+  before_save :complete_if_ended
+
   scope :active, -> { where(status: 'active') }
   scope :paused, -> { where(status: 'paused') }
   scope :cancelled, -> { where(status: 'cancelled') }
@@ -20,6 +23,20 @@ class UserVacation < ApplicationRecord
     where("start_date <= ? AND end_date >= ?", end_date, start_date) 
   }
   scope :active_or_paused, -> { where(status: ['active', 'paused']) }
+  scope :ended, -> { where('end_date < ?', Date.current) }
+
+  def self.complete_ended_vacations
+    ended_vacations = active.ended.or(paused.ended)
+    
+    ended_vacations.find_each do |vacation|
+      vacation.transaction do
+        vacation.update!(status: 'completed')
+        vacation.send(:reinstate_assignments)
+      end
+    end
+    
+    ended_vacations.count
+  end
 
   def as_json(options = {})
     super(options.merge(
@@ -135,10 +152,15 @@ class UserVacation < ApplicationRecord
                                   .where(scheduled_date: future_dates_in_range)
                                   .where(status: ['scheduled', 'pending'])
 
-    affected_assignments.update_all(
-      status: 'skipped_vacation',
-      cancellation_reason: "Customer vacation from #{start_date} to #{end_date}"
-    )
+    # Store original status before changing to skipped_vacation
+    affected_assignments.find_each do |assignment|
+      # Store original status in cancellation_reason for restoration
+      original_status = assignment.status
+      assignment.update!(
+        status: 'skipped_vacation',
+        cancellation_reason: "VACATION:#{original_status}:#{start_date}:#{end_date}"
+      )
+    end
 
     affected_assignments.count
   end
@@ -149,11 +171,24 @@ class UserVacation < ApplicationRecord
     skipped_assignments = customer.delivery_assignments
                                  .where(scheduled_date: future_dates_in_range)
                                  .where(status: 'skipped_vacation')
+                                 .where('cancellation_reason LIKE ?', 'VACATION:%')
 
-    skipped_assignments.update_all(
-      status: 'scheduled',
-      cancellation_reason: nil
-    )
+    # Restore original status from cancellation_reason
+    skipped_assignments.find_each do |assignment|
+      if assignment.cancellation_reason&.start_with?('VACATION:')
+        parts = assignment.cancellation_reason.split(':')
+        original_status = parts[1] || 'scheduled'
+        assignment.update!(
+          status: original_status,
+          cancellation_reason: nil
+        )
+      else
+        assignment.update!(
+          status: 'scheduled',
+          cancellation_reason: nil
+        )
+      end
+    end
 
     recreate_missing_assignments
 
@@ -161,7 +196,7 @@ class UserVacation < ApplicationRecord
   end
 
   def future_dates_in_range
-    timezone = customer&.user&.timezone
+    timezone = VacationConfig::DEFAULT_TIMEZONE
     effective_start = VacationConfig.effective_start_date(start_date, timezone)
     effective_start..end_date
   end
@@ -205,6 +240,16 @@ class UserVacation < ApplicationRecord
       date.day == schedule.start_date.day
     else
       false
+    end
+  end
+
+  def skip_assignments_if_active
+    skip_assignments if status == 'active'
+  end
+
+  def complete_if_ended
+    if (active? || paused?) && end_date < Date.current
+      self.status = 'completed'
     end
   end
 end

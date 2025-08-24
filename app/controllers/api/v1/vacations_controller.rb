@@ -1,7 +1,8 @@
 module Api
   module V1
     class VacationsController < ApplicationController
-      before_action :authenticate_customer!
+      before_action :authenticate_customer!, except: [:complete_ended]
+      before_action :authenticate_admin!, only: [:complete_ended]
       before_action :set_vacation, only: [:show, :pause, :unpause, :destroy]
       before_action :check_idempotency_key, only: [:create, :pause, :unpause, :destroy]
 
@@ -52,7 +53,7 @@ module Api
         if should_merge_overlaps?
           merge_overlapping_vacations
         else
-          check_for_overlaps
+          return if check_for_overlaps # Return if overlap detected and rendered
         end
 
         if @vacation.save
@@ -144,6 +145,22 @@ module Api
         render json: { error: 'Invalid date format' }, status: :bad_request
       end
 
+      def complete_ended
+        # This endpoint can be called by admin users to complete ended vacations
+        unless current_user&.admin?
+          return render json: { error: 'Unauthorized - Admin access required' }, status: :forbidden
+        end
+
+        completed_count = UserVacation.complete_ended_vacations
+
+        render json: {
+          message: 'Ended vacations completed successfully',
+          completedVacations: completed_count
+        }
+      rescue StandardError => e
+        render json: { error: "Failed to complete ended vacations: #{e.message}" }, status: :internal_server_error
+      end
+
       private
 
       def set_vacation
@@ -170,7 +187,10 @@ module Api
             error: 'Vacation dates overlap with an existing active or paused vacation',
             conflicting_vacations: overlapping.map(&:as_json)
           }, status: :conflict
+          return true # Indicate that we rendered a response
         end
+        
+        false # No overlap found, didn't render
       end
 
       def merge_overlapping_vacations
@@ -230,6 +250,20 @@ module Api
         end
 
         render_unauthorized unless @current_customer
+      end
+
+      def authenticate_admin!
+        token = request.headers['Authorization']&.split(' ')&.last
+        return render_unauthorized unless token
+
+        begin
+          decoded_token = JsonWebToken.decode(token)
+          @current_user = User.find(decoded_token[:user_id]) if decoded_token[:user_id]
+        rescue JWT::DecodeError, ActiveRecord::RecordNotFound
+          render_unauthorized
+        end
+
+        render_unauthorized unless @current_user&.admin?
       end
 
       def current_customer

@@ -11,6 +11,7 @@ module Api
           product = Product.find(params[:product_id])
           quantity = params[:quantity].to_f
           unit = params[:unit] || 'litre'
+          cod = params[:cod] || false
           
           # Validate date range
           if end_date <= start_date
@@ -29,7 +30,8 @@ module Api
             end_date: end_date,
             status: 'active',
             default_quantity: quantity,
-            default_unit: unit
+            default_unit: unit,
+            cod: cod
           )
           
           assignments_created = 0
@@ -61,7 +63,8 @@ module Api
             subscription_period: "#{start_date} to #{end_date}",
             total_days: (end_date - start_date).to_i + 1,
             delivery_days: assignments_created,
-            estimated_total_amount: assignments_created * quantity * product.price
+            estimated_total_amount: assignments_created * quantity * product.price,
+            cod: delivery_schedule.cod
           }, status: :created
           
         rescue ActiveRecord::RecordNotFound => e
@@ -108,6 +111,7 @@ module Api
             default_quantity: subscription.default_quantity,
             default_unit: subscription.default_unit,
             status: subscription.status,
+            cod: subscription.cod,
             delivery_person: {
               id: subscription.user.id,
               name: subscription.user.name,
@@ -178,7 +182,7 @@ module Api
       end
       
       def subscription_update_params
-        params.permit(:default_quantity, :default_unit, :end_date, :status)
+        params.permit(:default_quantity, :default_unit, :end_date, :status, :cod)
       end
       
       def update_future_assignments(subscription)

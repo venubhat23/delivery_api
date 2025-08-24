@@ -89,6 +89,7 @@ Rails.application.routes.draw do
         end
         collection do
           post :dry_run, to: 'vacations#dry_run'
+          post :complete_ended, to: 'vacations#complete_ended'
         end
       end
       

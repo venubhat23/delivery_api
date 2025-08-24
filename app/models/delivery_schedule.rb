@@ -8,6 +8,7 @@ class DeliverySchedule < ApplicationRecord
   validates :start_date, presence: true
   validates :default_quantity, presence: true, numericality: { greater_than: 0 }
   validates :default_unit, presence: true
+  validates :cod, inclusion: { in: [true, false] }
   
   # Ensure end_date is after start_date if present
   validate :end_date_after_start_date, if: -> { end_date.present? }
