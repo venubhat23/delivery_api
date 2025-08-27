@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_24_171537) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_27_173740) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -73,6 +73,33 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_24_171537) do
     t.index ["slug", "locale"], name: "index_cms_pages_on_slug_and_locale", unique: true
   end
 
+  create_table "customer_addresses", force: :cascade do |t|
+    t.bigint "customer_id", null: false
+    t.string "address_type"
+    t.text "street_address"
+    t.string "city"
+    t.string "state"
+    t.string "pincode"
+    t.string "landmark"
+    t.boolean "is_default"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_customer_addresses_on_customer_id"
+  end
+
+  create_table "customer_preferences", force: :cascade do |t|
+    t.bigint "customer_id", null: false
+    t.string "language"
+    t.time "delivery_time_start"
+    t.time "delivery_time_end"
+    t.boolean "skip_weekends"
+    t.text "special_instructions"
+    t.text "notification_preferences"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_customer_preferences_on_customer_id"
+  end
+
   create_table "customers", force: :cascade do |t|
     t.string "name"
     t.string "address"
@@ -103,9 +130,17 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_24_171537) do
     t.string "city"
     t.string "postal_code"
     t.string "state"
+    t.string "address_line"
+    t.string "full_address"
+    t.string "country"
+    t.index ["alt_phone_number"], name: "index_customers_on_alt_phone_number", where: "(alt_phone_number IS NOT NULL)"
     t.index ["delivery_person_id"], name: "index_customers_on_delivery_person_id"
+    t.index ["email"], name: "index_customers_on_email", where: "(email IS NOT NULL)"
     t.index ["is_active"], name: "index_customers_on_is_active"
+    t.index ["latitude", "longitude"], name: "index_customers_on_latitude_and_longitude", where: "((latitude IS NOT NULL) AND (longitude IS NOT NULL))"
     t.index ["member_id"], name: "index_customers_on_member_id", unique: true, where: "(member_id IS NOT NULL)"
+    t.index ["name"], name: "index_customers_on_name"
+    t.index ["preferred_language"], name: "index_customers_on_preferred_language"
     t.index ["user_id"], name: "index_customers_on_user_id"
   end
 
@@ -138,6 +173,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_24_171537) do
     t.decimal "discount_amount", precision: 10, scale: 2, default: "0.0"
     t.decimal "final_amount_after_discount", precision: 10, scale: 2
     t.text "cancellation_reason"
+    t.index ["customer_id", "scheduled_date"], name: "index_delivery_assignments_on_customer_and_date"
     t.index ["customer_id", "scheduled_date"], name: "index_delivery_assignments_on_customer_id_and_scheduled_date"
     t.index ["customer_id"], name: "index_delivery_assignments_on_customer_id"
     t.index ["delivery_schedule_id"], name: "index_delivery_assignments_on_delivery_schedule_id"
@@ -145,7 +181,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_24_171537) do
     t.index ["final_amount_after_discount"], name: "index_delivery_assignments_on_final_amount_after_discount"
     t.index ["invoice_generated"], name: "index_delivery_assignments_on_invoice_generated"
     t.index ["invoice_id"], name: "index_delivery_assignments_on_invoice_id"
+    t.index ["product_id", "scheduled_date", "status"], name: "index_delivery_assignments_composite"
     t.index ["product_id"], name: "index_delivery_assignments_on_product_id"
+    t.index ["scheduled_date", "product_id"], name: "index_delivery_assignments_completed", where: "((status)::text = 'completed'::text)"
+    t.index ["scheduled_date", "status"], name: "index_delivery_assignments_on_date_and_status"
     t.index ["user_id"], name: "index_delivery_assignments_on_user_id"
   end
 
@@ -190,7 +229,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_24_171537) do
     t.integer "sort_order", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "customer_id", null: false
+    t.boolean "submitted_by_user"
+    t.integer "status"
+    t.text "admin_response"
     t.index ["category", "locale"], name: "index_faqs_on_category_and_locale"
+    t.index ["customer_id"], name: "index_faqs_on_customer_id"
     t.index ["is_active"], name: "index_faqs_on_is_active"
     t.index ["locale"], name: "index_faqs_on_locale"
     t.index ["sort_order"], name: "index_faqs_on_sort_order"
@@ -278,9 +322,14 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_24_171537) do
     t.index ["date"], name: "index_procurement_assignments_on_date"
     t.index ["procurement_schedule_id", "date"], name: "idx_on_procurement_schedule_id_date_cd15031368"
     t.index ["procurement_schedule_id"], name: "index_procurement_assignments_on_procurement_schedule_id"
+    t.index ["product_id", "date"], name: "index_procurement_assignments_on_product_and_date"
     t.index ["product_id"], name: "index_procurement_assignments_on_product_id"
+    t.index ["status", "date"], name: "index_procurement_assignments_on_status_and_date"
     t.index ["status"], name: "index_procurement_assignments_on_status"
+    t.index ["user_id", "date"], name: "index_procurement_assignments_on_user_and_date"
+    t.index ["user_id", "vendor_name", "date"], name: "index_procurement_assignments_composite"
     t.index ["user_id"], name: "index_procurement_assignments_on_user_id"
+    t.index ["vendor_name", "date"], name: "index_procurement_assignments_on_vendor_and_date"
     t.index ["vendor_name"], name: "index_procurement_assignments_on_vendor_name"
   end
 
@@ -298,8 +347,12 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_24_171537) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "product_id"
+    t.index ["from_date", "to_date", "user_id"], name: "index_procurement_schedules_active", where: "((status)::text = 'active'::text)"
+    t.index ["product_id", "status"], name: "index_procurement_schedules_on_product_and_status"
     t.index ["product_id"], name: "index_procurement_schedules_on_product_id"
+    t.index ["user_id", "from_date", "to_date"], name: "index_procurement_schedules_on_user_and_dates"
     t.index ["user_id"], name: "index_procurement_schedules_on_user_id"
+    t.index ["vendor_name", "status"], name: "index_procurement_schedules_on_vendor_and_status"
   end
 
   create_table "products", force: :cascade do |t|
@@ -325,6 +378,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_24_171537) do
     t.index ["category_id"], name: "index_products_on_category_id"
     t.index ["is_active"], name: "index_products_on_is_active"
     t.index ["is_subscription_eligible"], name: "index_products_on_is_subscription_eligible"
+    t.index ["name"], name: "index_products_on_name"
     t.index ["sku"], name: "index_products_on_sku", unique: true
   end
 
@@ -569,6 +623,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_24_171537) do
     t.string "external_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "priority"
+    t.integer "assigned_to"
+    t.datetime "resolved_at"
+    t.integer "customer_rating"
+    t.text "customer_feedback"
     t.index ["customer_id"], name: "index_support_tickets_on_customer_id"
     t.index ["status"], name: "index_support_tickets_on_status"
   end
@@ -606,6 +665,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_24_171537) do
   end
 
   add_foreign_key "advertisements", "users"
+  add_foreign_key "customer_addresses", "customers"
+  add_foreign_key "customer_preferences", "customers"
   add_foreign_key "customers", "users"
   add_foreign_key "customers", "users", column: "delivery_person_id"
   add_foreign_key "deliveries", "customers"
@@ -619,6 +680,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_24_171537) do
   add_foreign_key "delivery_schedules", "customers"
   add_foreign_key "delivery_schedules", "products"
   add_foreign_key "delivery_schedules", "users"
+  add_foreign_key "faqs", "customers"
   add_foreign_key "invoice_items", "invoices"
   add_foreign_key "invoice_items", "products"
   add_foreign_key "invoices", "customers"

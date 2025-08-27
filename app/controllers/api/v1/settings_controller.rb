@@ -285,7 +285,8 @@ module Api
       # Build FAQ data with categories and search capability
       def build_faq_data(locale)
         faqs = Faq.published.for_locale(locale).ordered
-        categories = faqs.group(:category).count
+        # Separate query for categories to avoid GROUP BY conflict with ORDER BY
+        categories = Faq.published.for_locale(locale).group(:category).count
         
         {
           categories: categories.map { |cat, count| 
@@ -426,10 +427,6 @@ module Api
                      :landmark, :is_default)
       end
 
-      def authenticate_request
-        # Add your JWT/API key authentication logic here
-        head :unauthorized unless current_user
-      end
     end
   end
 end
