@@ -14,7 +14,7 @@ Rails.application.configure do
     "gnu-modern-totally.ngrok-free.app",
     "atmanirbharfarm.work.gd",
     "13.232.153.224",                # Allow requests from the production server IP
-    "https://steady-raccoon-enormous.ngrok-free.app"
+    "steady-raccoon-enormous.ngrok-free.app"
   ].compact
     config.hosts << "localhost:3002"
 
