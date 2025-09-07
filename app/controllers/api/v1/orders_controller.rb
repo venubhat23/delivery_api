@@ -8,6 +8,7 @@ module Api
           @customer = Customer.find(params[:customer_id])
           delivery_date = Date.parse(params[:delivery_date])
           items = params[:items]
+          booked_by = params[:booked_by] || 'admin'
           
           unless items.present? && items.is_a?(Array)
             return render json: { error: "Items are required" }, status: :bad_request
@@ -22,7 +23,8 @@ module Api
             end_date: delivery_date,
             status: 'active',
             default_quantity: items.first[:quantity] || 1,
-            default_unit: items.first[:unit] || 'pieces'
+            default_unit: items.first[:unit] || 'pieces',
+            booked_by: booked_by
           )
           
           assignments_created = 0
@@ -44,7 +46,8 @@ module Api
               scheduled_date: delivery_date,
               quantity: item[:quantity],
               unit: item[:unit],
-              status: 'pending'
+              status: 'pending',
+              booked_by: booked_by
             )
             
             assignments_created += 1

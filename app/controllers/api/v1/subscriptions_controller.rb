@@ -12,6 +12,7 @@ module Api
           quantity = params[:quantity].to_f
           unit = params[:unit] || 'litre'
           cod = params[:cod] || false
+          booked_by = params[:booked_by] || 'admin'
           
           # Validate date range
           if end_date <= start_date
@@ -31,7 +32,8 @@ module Api
             status: 'active',
             default_quantity: quantity,
             default_unit: unit,
-            cod: cod
+            cod: cod,
+            booked_by: booked_by
           )
           
           assignments_created = 0
@@ -49,7 +51,8 @@ module Api
                 scheduled_date: current_date,
                 quantity: quantity,
                 unit: unit,
-                status: 'pending'
+                status: 'pending',
+                booked_by: booked_by
               )
               assignments_created += 1
             end
