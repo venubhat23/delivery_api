@@ -12,7 +12,7 @@ module Api
           return
         end
 
-        #generate_qr_code if @admin_setting.upi_id.present?
+        generate_qr_code if @admin_setting.upi_id.present?
 
         bank_details = {
           business_name: @admin_setting.business_name,
@@ -26,8 +26,8 @@ module Api
           account_number: @admin_setting.account_number,
           ifsc_code: @admin_setting.ifsc_code,
           upi_id: @admin_setting.upi_id,
-          terms_and_conditions: @admin_setting.formatted_terms_and_conditions
-          #qr_code_url: @admin_setting.qr_code_path.present? ? request.base_url + @admin_setting.qr_code_path : nil
+          terms_and_conditions: @admin_setting.formatted_terms_and_conditions,
+          qr_code_url: @admin_setting.qr_code_path.present? ? request.base_url + @admin_setting.qr_code_path : nil
         }
 
         render json: { bank_details: bank_details }, status: :ok
