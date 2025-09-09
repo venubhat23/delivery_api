@@ -27,7 +27,7 @@ module Api
           ifsc_code: @admin_setting.ifsc_code,
           upi_id: @admin_setting.upi_id,
           terms_and_conditions: @admin_setting.formatted_terms_and_conditions,
-          qr_code_url: @admin_setting.qr_code_path.present? ? request.base_url + @admin_setting.qr_code_path : nil
+          qr_code_url: "https://file-upload-2024-milk-delivery.s3.ap-south-1.amazonaws.com/uploads/upi_qr_1.svg"
         }
 
         render json: { bank_details: bank_details }, status: :ok
