@@ -8,7 +8,14 @@ module Api
           @customer = Customer.find(params[:customer_id])
           delivery_date = Date.parse(params[:delivery_date])
           items = params[:items]
-          booked_by = params[:booked_by] || 'admin'
+          if params[:booking_done_by] == "customer"
+            booked_by = 1
+          elsif params[:booking_done_by] == "delivery_person"
+            booked_by = 2
+          else
+            booked_by = 0
+          end
+          booked_by = booked_by
           
           unless items.present? && items.is_a?(Array)
             return render json: { error: "Items are required" }, status: :bad_request

@@ -12,8 +12,15 @@ module Api
           quantity = params[:quantity].to_f
           unit = params[:unit] || 'litre'
           cod = params[:cod] || false
-          booked_by = params[:booked_by] || 'admin'
-          
+          if params[:booking_done_by] == "customer"
+            booked_by = 1
+          elsif params[:booking_done_by] == "delivery_person"
+            booked_by = 2
+          else
+            booked_by = 0
+          end
+          booked_by = booked_by
+                    
           # Validate date range
           if end_date <= start_date
             return render json: { error: "End date must be after start date" }, status: :bad_request
