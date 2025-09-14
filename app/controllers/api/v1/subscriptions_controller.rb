@@ -14,7 +14,7 @@ module Api
           cod = params[:cod] || false
           if params[:booking_done_by] == "customer"
             booked_by = 1
-          elsif params[:booking_done_by] == "delivery_person"
+          elsif params[:booking_done_by] == "delvery_person"
             booked_by = 2
           else
             booked_by = 0
